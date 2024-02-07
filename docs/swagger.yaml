@@ -1,0 +1,2949 @@
+openapi: 3.0.0
+info:
+  title: Finance101 Backend API
+  summary: Finance101 Documentation for backend REST APIs
+  version: 1.0.0
+  description: Finance101 Proprietary Backend API Endpoints
+  contact:
+    name: Finance101
+    url: https://instagram.com/finance101.business
+    email: dev.finance101@gmail.com
+version: 1.0.0
+servers:
+  - url: "http://localhost:3000/"
+components:
+  schemas:
+    GeneralError:
+      description: General Error used for error messages
+      type: object
+      properties:
+        errorName:
+          type: string
+        error:
+          type: string
+    InvalidBooleanParamError:
+      description: Error for invalid boolean parameter
+      type: object
+      properties:
+        error:
+          type: string
+        statusCode:
+          type: integer
+          format: int32
+    InvalidPaginationParamsError:
+      description: Error for invalid pagination parameters
+      type: object
+      properties:
+        error:
+          type: string
+        statusCode:
+          type: integer
+          format: int32
+    InvalidSortingOptionsError:
+      description: Error for invalid sorting options
+      type: object
+      properties:
+        error:
+          type: string
+        statusCode:
+          type: integer
+          format: int32
+    MissingRequiredFieldsError:
+      description: Error for missing required fields
+      type: object
+      properties:
+        errorName:
+          type: string
+        error:
+          type: string
+        missingFields:
+          type: array
+          items:
+            type: string
+        statusCode:
+          type: integer
+          format: int32
+    PermissionDeniedError:
+      description: Permission denied error
+      type: object
+      properties:
+        errorName:
+          type: string
+        error:
+          type: string
+        statusCode:
+          type: integer
+          format: int32
+    NotFoundInDatabase:
+      description: Error for not found in the database
+      type: object
+      properties:
+        error:
+          type: string
+        statusCode:
+          type: integer
+          format: int32
+    BackofficeUser:
+      description: Backoffice User
+      type: object
+      properties:
+        id:
+          description: Unique user identifier
+          type: integer
+          format: int64
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: password
+          format: password
+        firstName:
+          type: string
+        lastName:
+          type: string
+        role:
+          $ref: "#/components/schemas/Role"
+        createdAt:
+          description: Timestamp the user was created
+          type: string
+        updatedAt:
+          description: Timestamp the user was updated
+          type: string
+        isActive:
+          description: Flag to indicate if user is active or not
+          type: boolean
+    PasswordlessBackofficeUser:
+      description: Passwordless Backoffice User
+      type: object
+      properties:
+        id:
+          description: Unique user identifier
+          type: integer
+          format: int64
+        email:
+          type: string
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        role:
+          $ref: "#/components/schemas/Role"
+        createdAt:
+          description: Timestamp the user was created
+          type: string
+        updatedAt:
+          description: Timestamp the user was updated
+          type: string
+        isActive:
+          description: Flag to indicate if user is active or not
+          type: boolean
+    Role:
+      description: Backoffice User's Role
+      type: object
+      properties:
+        id:
+          description: Unique role identifier
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: string
+        createdAt:
+          description: Timestamp the role was created
+          type: string
+        updatedAt:
+          description: Timestamp the role was updated
+          type: string
+    Permission:
+      description: A role's permission
+      type: object
+      properties:
+        id:
+          description: Unique permission identifier
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: string
+        createdAt:
+          description: Timestamp the permission was created
+          type: string
+        updatedAt:
+          description: Timestamp the permission was updated
+          type: string
+    Category:
+      properties:
+        id:
+          description: Unique category identifier
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: string
+        createdAt:
+          description: Timestamp the category was created
+          type: string
+        updatedAt:
+          description: Timestamp the category was updated
+          type: string
+        isPublished:
+          description: Flag to indicate if category is published or not
+          type: boolean
+    Section:
+      properties:
+        id:
+          description: Unique category identifier
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: string
+        createdAt:
+          description: Timestamp the section was created
+          type: string
+        updatedAt:
+          description: Timestamp the section was updated
+          type: string
+    Tag:
+      description: Tags
+      type: object
+      properties:
+        id:
+          description: Unique tag identifier
+          type: integer
+          format: int64
+        title:
+          type: string
+        createdAt:
+          description: Timestamp the tag was created
+          type: string
+        updatedAt:
+          description: Timestamp the tag was updated
+          type: string
+  responses:
+    NotFound:
+      description: Entity not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/NotFoundInDatabase"
+    IllegalInput:
+      description: Illegal input for the operation.
+    GeneralError:
+      description: General Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+paths:
+  /api/backoffice/user/list:
+    get:
+      summary: Get all backoffice users, if no isActive filter provided, default is true
+      tags:
+        - Backoffice Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pageNumber
+          in: path
+          required: false
+          description: Page number (must be above or equal to 1)
+          schema:
+            type: integer
+        - name: pageSize
+          in: path
+          required: false
+          description: Number of items per page
+          schema:
+            type: integer
+        - name: sortBy
+          in: path
+          required: false
+          description: Sort by parameter
+          schema:
+            type: string
+            enum:
+              - id
+              - username
+              - email
+              - firstName
+              - lastName
+              - roleId
+              - isActive
+              - createdAt
+              - updatedAt
+        - name: order
+          in: path
+          required: false
+          description: Order parameter
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: query
+          in: path
+          required: false
+          description: Query to search user by username, email, firstName, lastName and role name
+          schema:
+            type: string
+        - name: roleId
+          in: path
+          required: false
+          description: Filter by roleId
+          schema:
+            type: string
+        - name: isActive
+          in: path
+          required: false
+          description: Filter by isActive
+          schema:
+            type: string
+            enum:
+              - true
+              - false
+      responses:
+        "200":
+          description: A list of backoffice users (may be empty)
+          content:
+            application/json:
+              example:
+                - id: 1
+                  username: admin
+                  email: admin@gmail.com
+                  firstName: Admin
+                  lastName: User
+                  role:
+                    id: 1
+                    title: ADMIN
+                  isActive: true
+                  createdAt: 2023-11-14T17:59:44.989Z
+                  updatedAt: 2023-11-14T18:00:03.469Z
+                - id: 2
+                  username: contentcreator
+                  email: contentcreator@gmail.com
+                  firstName: Content
+                  lastName: Creator
+                  role:
+                    id: 2
+                    title: CONTENT_CREATOR
+                  isActive: true
+                  createdAt: 2023-11-15T14:30:10.089Z
+                  updatedAt: 2023-11-15T18:05:10.669Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/user/login:
+    post:
+      summary: Login backoffice user
+      tags:
+        - Backoffice Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  required: true
+                  type: string
+                password:
+                  required: true
+                  type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                email: admin@gmail.com
+                token: hashedToken
+                role: ADMIN
+                permissions:
+                  - CREATE_BACKOFFICE_USER
+                  - LIST_BACKOFFICE_USERS
+                  - UPDATE_BACKOFFICE_USER
+  /api/backoffice/user/signup:
+    post:
+      summary: Add backoffice user
+      tags:
+        - Backoffice Users
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  required: true
+                  type: string
+                password:
+                  required: true
+                  type: string
+                username:
+                  required: true
+                  type: string
+                firstName:
+                  required: true
+                  type: string
+                lastName:
+                  required: true
+                  type: string
+                roleId:
+                  required: true
+                  type: integer
+                isActive:
+                  required: false
+                  type: boolean
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                email: admin@gmail.com
+                token: hashedToken
+                role: ADMIN
+                permissions:
+                  - CREATE_BACKOFFICE_USER
+                  - LIST_BACKOFFICE_USERS
+                  - UPDATE_BACKOFFICE_USER
+        "400":
+          description: Missing fields
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MissingRequiredFieldsError"
+        default:
+          desciption: General error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/user/{id}:
+    get:
+      summary: Get a single backoffice user by ID
+      tags:
+        - Backoffice Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice user
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  username: admin
+                  firstName: Admin
+                  lastName: User
+                  email: admin@gmail.com
+                  roleId: 1
+                  isActive: true
+                  createdAt: 2023-11-14T17:59:44.989Z
+                  updatedAt: 2023-11-14T18:00:03.469Z
+                  role:
+                    id: 1
+                    title: ADMIN
+                    description: Admin role
+                    createdAt: 2023-11-15T16:25:14.285Z
+                    updatedAt: 2023-11-15T16:25:14.285Z
+                    permissions:
+                      - createdAt: 2023-11-16T17:02:03.701Z
+                        updatedAt: 2023-11-16T17:02:03.701Z
+                        roleId: 1
+                        permissionId: 1
+                        permission:
+                          id: 1
+                          title: LIST_BACKOFFICE_USERS
+                          description: List all users
+                          createdAt: 2023-11-16T17:02:03.701Z
+                          updatedAt: 2023-11-16T17:02:03.701Z
+                      - createdAt: 2023-11-16T17:02:03.701Z
+                        updatedAt: 2023-11-16T17:02:03.701Z
+                        roleId: 1
+                        permissionId: 2
+                        permission:
+                          id: 2
+                          title: CREATE_BACKOFFICE_USERS
+                          description: Create a backoffice user
+                          createdAt: 2023-11-16T17:02:03.701Z
+                          updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    patch:
+      summary: Update a backoffice user
+      tags:
+        - Backoffice Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice user
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                username:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                roleId:
+                  type: integer
+                isActive:
+                  required: false
+                  type: boolean
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                username: admin
+                password: hashedPassword
+                firstName: Admin
+                lastName: User
+                email: admin@gmail.com
+                roleId: 1
+                createdAt: 2023-11-13T18:38:08.122Z
+                updatedAt: 2023-11-14T09:41:08.014Z
+                isActive: true
+        "403":
+          description: Permission denied if trying to update own role and is not an admin
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PermissionDeniedError"
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"     
+  /api/backoffice/roles/list:
+    get:
+      summary: Get all backoffice roles
+      tags:
+        - Backoffice Roles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pageNumber
+          in: path
+          required: false
+          description: Page number (must be above or equal to 1)
+          schema:
+            type: integer
+        - name: pageSize
+          in: path
+          required: false
+          description: Number of items per page
+          schema:
+            type: integer
+        - name: sortBy
+          in: path
+          required: false
+          description: Sort by parameter
+          schema:
+            type: string
+            enum:
+              - id
+              - createdAt
+              - updatedAt
+              - title
+        - name: order
+          in: path
+          required: false
+          description: Which order to sort by
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: query
+          in: path
+          required: false
+          description: Search by role title or description
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A list of backoffice roles (may be empty)
+          content:
+            application/json:
+              example:
+                - id: 1
+                  title: ADMIN
+                  description: Administrator role
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                - id: 2
+                  title: CONTENT_CREATOR
+                  description: Content Creator role
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/roles/{id}:
+    get:
+      summary: Get a single backoffice role by ID
+      tags:
+        - Backoffice Roles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice role
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: ADMIN
+                description: Administrator role
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                permissions:
+                  - createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+                    roleId: 1
+                    permissionId: 1
+                    permission:
+                      id: 1
+                      title: CREATE_BACKOFFICE_USER
+                      description: Create backoffice user
+                      createdAt: 2023-11-16T17:02:03.701Z
+                      updatedAt: 2023-11-16T17:02:03.701Z
+                  - createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+                    roleId: 1
+                    permissionId: 1
+                    permission:
+                      id: 1
+                      title: CREATE_BACKOFFICE_USER
+                      description: Create backoffice user
+                      createdAt: 2023-11-16T17:02:03.701Z
+                      updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    patch:
+      summary: Update a backoffice role
+      tags:
+        - Backoffice Roles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice role
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 3
+                title: UPDATED_ROLE
+                description: Updated role description
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    delete:
+      summary: Delete a backoffice role
+      tags:
+        - Backoffice Roles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice role
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 3
+                title: DELETED_ROLE
+                description: Deleted role description
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: General Error
+          content:
+            schema:
+              $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/roles/:
+    post:
+      summary: Create a backoffice role
+      tags:
+        - Backoffice Roles
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  required: true
+                  type: string
+                description:
+                  required: true
+                  type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 3
+                title: NEW_ROLE
+                description: New role description
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/permissions/list:
+    get:
+      summary: Get all backoffice permissions
+      tags:
+        - Backoffice Permissions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pageNumber
+          in: path
+          required: false
+          description: Page number (must be above or equal to 1)
+          schema:
+            type: integer
+        - name: pageSize
+          in: path
+          required: false
+          description: Number of items per page
+          schema:
+            type: integer
+        - name: sortBy
+          in: path
+          required: false
+          description: Sort by parameter
+          schema:
+            type: string
+            enum:
+              - id
+              - createdAt
+              - updatedAt
+              - title
+        - name: order
+          in: path
+          required: false
+          description: Order to sort by
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: query
+          in: path
+          required: false
+          description: Query to search by title or description
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A list of backoffice permissions (may be empty)
+          content:
+            application/json:
+              example:
+                - id: 1
+                  title: READ_CONTENT
+                  description: Read content permission
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                - id: 2
+                  title: WRITE_CONTENT
+                  description: Write content permission
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/permissions/{id}:
+    get:
+      summary: Get a single backoffice permission by ID
+      tags:
+        - Backoffice Permissions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice permission
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: READ_CONTENT
+                description: Read content permission
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    patch:
+      summary: Update a backoffice permission
+      tags:
+        - Backoffice Permissions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice permission
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 3
+                title: UPDATED_PERMISSION
+                description: Updated permission description
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    delete:
+      summary: Delete a backoffice permission
+      tags:
+        - Backoffice Permissions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice permission
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 3
+                title: DELETED_PERMISSION
+                description: Deleted permission description
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/permissions/:
+    post:
+      summary: Create a backoffice permission
+      tags:
+        - Backoffice Permissions
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 3
+                title: NEW_PERMISSION
+                description: New permission description
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+      default:
+        description: Error message
+        content:
+          application/json:
+            schema:
+  /api/backoffice/rolePermissions/list:
+    get:
+      summary: Get all backoffice role permissions
+      tags:
+        - Role Permissions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pageNumber
+          in: path
+          required: false
+          description: Page number (must be above or equal to 1)
+          schema:
+            type: integer
+        - name: pageSize
+          in: path
+          required: false
+          description: Number of items per page
+          schema:
+            type: integer
+        - name: sortBy
+          in: path
+          required: false
+          description: Sort by parameter
+          schema:
+            type: string
+            enum:
+              - permissionId
+              - roleId
+              - createdAt
+              - updatedAt
+        - name: order
+          in: path
+          required: false
+          description: Order parameter
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: query
+          in: path
+          required: false
+          description: Query to search by permission title or description, or role title or description
+          schema:
+            type: string
+        - name: roleId
+          in: path
+          required: false
+          description: RoleId to filter by
+          schema:
+            type: string
+        - name: permissionId
+          in: path
+          required: false
+          description: permissionId to filter by
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A list of backoffice role permissions (may be empty)
+          content:
+            application/json:
+              example:
+                - createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  roleId: 1
+                  permissionId: 1
+                  role:
+                    id: 1
+                    title: ADMIN
+                    description: Administrator role
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+                  permission:
+                    id: 1
+                    title: READ_CONTENT
+                    description: Read content permission
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+                - createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  roleId: 2
+                  permissionId: 2
+                  role:
+                    id: 2
+                    title: CONTENT_CREATOR
+                    description: Content Creator role
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+                  permission:
+                    id: 2
+                    title: WRITE_CONTENT
+                    description: Write content permission
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/rolePermissions/{roleId}/{permissionId}:
+    get:
+      summary: Get a single backoffice role permission by ID
+      tags:
+        - Role Permissions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice role
+          schema:
+            type: integer
+        - name: permissionId
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice permission
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                roleId: 1
+                permissionId: 1
+                role:
+                  id: 1
+                  title: ADMIN
+                  description: Administrator role
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                permission:
+                  id: 1
+                  title: READ_CONTENT
+                  description: Read content permission
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    patch:
+      summary: Update a backoffice role permission
+      tags:
+        - Role Permissions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice role
+          schema:
+            type: integer
+        - name: permissionId
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice permission
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newRoleId:
+                  type: integer
+                newPermissionId:
+                  type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                roleId: 3
+                permissionId: 3
+                role:
+                  id: 3
+                  title: UPDATED_ROLE
+                  description: Updated role description
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                permission:
+                  id: 3
+                  title: UPDATED_PERMISSION
+                  description: Updated permission description
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    delete:
+      summary: Delete a backoffice role permission
+      tags:
+        - Role Permissions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice role
+          schema:
+            type: integer
+        - name: permissionId
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice permission
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                roleId: 3
+                permissionId: 3
+                role:
+                  id: 3
+                  title: DELETED_ROLE
+                  description: Deleted role description
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                permission:
+                  id: 3
+                  title: DELETED_PERMISSION
+                  description: Deleted permission description
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/rolePermissions/:
+    post:
+      summary: Create a backoffice role permission
+      tags:
+        - Role Permissions
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roleId:
+                  type: integer
+                permissionId:
+                  type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                roleId: 3
+                permissionId: 3
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/categories/list:
+    get:
+      summary: Get list of categories (it will not list the categories with isPublished = false by default)
+      tags:
+        - Categories
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pageNumber
+          in: path
+          required: false
+          description: Page number (must be above or equal to 1)
+          schema:
+            type: integer
+        - name: pageSize
+          in: path
+          required: false
+          description: Number of items per page
+          schema:
+            type: integer
+        - name: sortBy
+          in: path
+          required: false
+          description: Sort by parameter
+          schema:
+            type: string
+            enum:
+              - id
+              - isPublished
+              - title
+              - parentCategoryId
+              - createdAt
+              - updatedAt
+        - name: order
+          in: path
+          required: false
+          description: Order parameter
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: query
+          in: path
+          required: false
+          description: Query to search by title or description
+          schema:
+            type: string
+        - name: isPublished
+          in: path
+          required: false
+          description: Filter by isPublished
+          schema:
+            type: string
+            enum:
+              - true
+              - false
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  title: Investimentos
+                  description: Investimentos I
+                  parentCategoryId: null
+                  parentCategory: null
+                  isPublished: true
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                - id: 2
+                  title: ETF
+                  description: Investir em ETFs
+                  parentCategoryId: 1
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  parentCategory:
+                    id: 1
+                    title: Investimentos
+                    description: Investimentos I
+                    parentCategoryId: null
+                    isPublished: true
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/categories/{id}:
+    get:
+      summary: Get a single category by ID
+      tags:
+        - Categories
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the category
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: ETF
+                description: Investir em ETFs
+                isPublished: true
+                parentCategoryId: 1
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                parentCategory:
+                  id: 1
+                  title: Investimentos
+                  description: Investimentos I
+                  isPublished: true
+                  parentCategoryId: null
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    patch:
+      summary: Update a category
+      tags:
+        - Categories
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the category
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                parentCategoryId:
+                  type: integer
+                isPublished:
+                  type: boolean
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: Investimentos
+                description: Investimentos I
+                parentCategoryId: 2
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                isPublished: true
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    delete:
+      summary: Delete a category
+      tags:
+        - Categories
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the category
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: Investimentos
+                description: Investimentos I
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                isPublished: true
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/categories/:
+    post:
+      summary: Create a new category
+      tags:
+        - Categories
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  required: true
+                  type: string
+                description:
+                  required: true
+                  type: string
+                parentCategoryId:
+                  required: false
+                  type: integer
+                isPublished:
+                  required: false
+                  type: boolean
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: ETF
+                description: Investir em ETFs
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                parentCategoryId: 1
+                isPublished: false
+        "400":
+          description: Error response if required fields are not filled
+          content:
+            application/json:
+              example:
+                error: Please fill in all required fields
+                missingFields:
+                  - title
+                  - description
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/sections/list:
+    get:
+      summary: Get list of sections
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pageNumber
+          in: path
+          required: false
+          description: Page number (must be above or equal to 1)
+          schema:
+            type: integer
+        - name: pageSize
+          in: path
+          required: false
+          description: Number of items per page
+          schema:
+            type: integer
+        - name: sortBy
+          in: path
+          required: false
+          description: Sort by parameter
+          schema:
+            type: string
+            enum:
+              - id
+              - title
+              - categoryId
+              - createdAt
+              - updatedAt
+        - name: order
+          in: path
+          required: false
+          description: Order parameter
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: query
+          in: path
+          required: false
+          description: Query to search by title or description or category title
+          schema:
+            type: string
+        - name: categoryId
+          in: path
+          required: false
+          description: Filter by categoryId
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  title: Investimentos básicos
+                  description: Aprende sobre como investir...
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  categoryId: 1
+                - id: 2
+                  title: Poupanças básico
+                  description: Aprende a poupar o teu dinheiro...
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  categoryId: 2
+                  category:
+                    id: 2
+                    title: Poupanças
+                    description: Como poupar...
+                    parentCategoryId: 4
+                    parentCategory:
+                      id: 4
+                      title: Hello
+                      description: Saying hello..
+                      parentCategoryId: 2
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/sections/{id}:
+    get:
+      summary: Get a single section by ID
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the section
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: Investimentos Básicos
+                description: Como investir...
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                categoryId: 2
+                category:
+                  id: 2
+                  title: Aaaaa
+                  description: aaa...
+                  parentCategoryId: 4
+                  parentCategory:
+                    id: 4
+                    title: Hello
+                    description: Saying hello..
+                    parentCategoryId: 2
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    patch:
+      summary: Update a section
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the section
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                categoryId:
+                  type: integer
+                  format: int64
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: Investimentos Básicos
+                description: Como investir...
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                categoryId: 2
+                category:
+                  id: 2
+                  title: Aaaaa
+                  description: aaa...
+                  parentCategoryId: 4
+                  parentCategory:
+                    id: 4
+                    title: Hello
+                    description: Saying hello..
+                    parentCategoryId: 2
+
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    delete:
+      summary: Delete a section
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the section
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: Investimentos Básicos
+                description: Como investir...
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                categoryId: 2
+                category:
+                  id: 2
+                  title: Aaaaa
+                  description: aaa...
+                  parentCategoryId: 4
+                  parentCategory:
+                    id: 4
+                    title: Hello
+                    description: Saying hello..
+                    parentCategoryId: 2
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/sections/:
+    post:
+      summary: Create a section
+      tags:
+        - Sections
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  required: true
+                  type: string
+                description:
+                  required: true
+                  type: string
+                categoryId:
+                  required: true
+                  type: integer
+                  format: int64
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 3
+                title: Investimentos Básicos
+                description: Como investir...
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                categoryId: 2
+      default:
+        description: Error message
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/sectionArticles/list:
+    get:
+      summary: Get all section articles
+      tags:
+        - SectionArticles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pageNumber
+          in: path
+          required: false
+          description: Page number (must be above or equal to 1)
+          schema:
+            type: integer
+        - name: pageSize
+          in: path
+          required: false
+          description: Number of items per page
+          schema:
+            type: integer
+        - name: sortBy
+          in: path
+          required: false
+          description: Sort by parameter
+          schema:
+            type: string
+            enum:
+              - sectionId
+              - articleId
+              - title
+              - createdAt
+              - updatedAt
+        - name: order
+          in: path
+          required: false
+          description: Order parameter
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: query
+          in: path
+          required: false
+          description: Query to search by article title or description, or section title
+          schema:
+            type: string
+        - name: sectionId
+          in: path
+          required: false
+          description: sectionId to filter by
+          schema:
+            type: string
+        - name: articleId
+          in: path
+          required: false
+          description: articleId to filter by
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A list of sectionArticles
+          content:
+            application/json:
+              example:
+                - sectionId: 3
+                  articleId: 3
+                  title: Secção sobre...
+                  description: Investir em...
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  section:
+                    id: 3
+                    title: Invest....
+                    description: Investindo em...
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+                    categoryId: 7
+                  article:
+                    id: 3
+                    title: Dummy article
+                    content: Dummy
+                    authorId: 1
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+                    published: false
+                    categoryId: 1
+                    subcategoryId: null
+                - sectionId: 3
+                  articleId: 3
+                  title: Secção sobre...
+                  description: Investir em...
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  section:
+                    id: 3
+                    title: Invest....
+                    description: Investindo em...
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+                    categoryId: 7
+                  article:
+                    id: 3
+                    title: Dummy article
+                    content: Dummy
+                    authorId: 1
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+                    published: false
+                    categoryId: 1
+                    subcategoryId: null
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/sectionArticles/:
+    post:
+      summary: Create a sectionArticle
+      tags:
+        - SectionArticles
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sectionId:
+                  required: true
+                  type: integer
+                articleId:
+                  required: true
+                  type: integer
+                title:
+                  required: true
+                  type: string
+                description:
+                  required: true
+                  type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                sectionId: 3
+                articleId: 3
+                title: Secção sobre...
+                description: Investir em...
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                section:
+                  id: 3
+                  title: Invest....
+                  description: Investindo em...
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  categoryId: 7
+                article:
+                  id: 3
+                  title: Dummy article
+                  content: Dummy
+                  authorId: 1
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  published: false
+                  categoryId: 1
+                  subcategoryId: null
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/sectionArticles/{sectionId}/{articleId}:
+    get:
+      summary: Get a sectionArticle
+      tags:
+        - SectionArticles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sectionId
+          in: path
+          required: true
+          description: The auto-generated id of the section
+          schema:
+            type: integer
+        - name: articleId
+          in: path
+          required: true
+          description: The auto-generated id of the article
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                sectionId: 3
+                articleId: 3
+                title: Secçao...
+                description: lalslassas
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                section:
+                  id: 3
+                  title: Invest....
+                  description: Investindo em...
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  categoryId: 7
+                article:
+                  id: 3
+                  title: Dummy article
+                  content: Dummy
+                  authorId: 1
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  published: false
+                  categoryId: 1
+                  subcategoryId: null
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    patch:
+      summary: Update a SectionArticle
+      tags:
+        - SectionArticles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sectionId
+          in: path
+          required: true
+          description: The auto-generated id of the section
+          schema:
+            type: integer
+        - name: articleId
+          in: path
+          required: true
+          description: The auto-generated id of the article
+          schema:
+            type: integer
+      requestBody:
+        - name: newSectionId
+          in: path
+          required: false
+          description: New sectionId to update to
+          schema:
+            type: integer
+        - name: newArticleId
+          in: path
+          required: false
+          description: New articleId to update to
+          schema:
+            type: integer
+        - name: newTitle
+          in: path
+          required: false
+          description: New title to update to
+          schema:
+            type: string
+        - name: newDescription
+          in: path
+          required: false
+          description: New description to update to
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                sectionId: 3
+                articleId: 3
+                title: Secçao...
+                description: lalslassas
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                section:
+                  id: 3
+                  title: Invest....
+                  description: Investindo em...
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  categoryId: 7
+                article:
+                  id: 3
+                  title: Dummy article
+                  content: Dummy
+                  authorId: 1
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  published: false
+                  categoryId: 1
+                  subcategoryId: null
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    delete:
+      summary: Delete a SectionArticle
+      tags:
+        - SectionArticles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sectionId
+          in: path
+          required: true
+          description: The auto-generated id of the section
+          schema:
+            type: integer
+        - name: articleId
+          in: path
+          required: true
+          description: The auto-generated id of the article
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                sectionId: 3
+                articleId: 3
+                title: Secçao...
+                description: lalslassas
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/tags/list:
+    get:
+      summary: Get list of tags
+      tags:
+        - Tags
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pageNumber
+          in: path
+          required: false
+          description: Page number (must be above or equal to 1)
+          schema:
+            type: integer
+        - name: pageSize
+          in: path
+          required: false
+          description: Number of items per page
+          schema:
+            type: integer
+        - name: sortBy
+          in: path
+          required: false
+          description: Sort by parameter
+          schema:
+            type: string
+            enum:
+              - id
+              - title
+              - createdAt
+              - updatedAt
+        - name: order
+          in: path
+          required: false
+          description: Order parameter
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: query
+          in: path
+          required: false
+          description: Query to search by title
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  title: poupancas
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                - id: 2
+                  title: investimentos
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/tags/:
+    post:
+      summary: Create a new tag
+      tags:
+        - Tags
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  description: Backend will lowercase this parameter for consistency
+                  type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: poupancas
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/tags/{id}:
+    get:
+      summary: Get a single tag by ID
+      tags:
+        - Tags
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the tag
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: poupancas
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    patch:
+      summary: Update a tag
+      tags:
+        - Tags
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the tag
+          schema:
+            type: integer
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: poupancas
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    delete:
+      summary: Delete a tag
+      tags:
+        - Tags
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the tag
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: poupancas
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/articleTags/list:
+    get:
+      summary: Get all articleTags
+      tags:
+        - ArticleTags
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pageNumber
+          in: path
+          required: false
+          description: Page number (must be above or equal to 1)
+          schema:
+            type: integer
+        - name: pageSize
+          in: path
+          required: false
+          description: Number of items per page
+          schema:
+            type: integer
+        - name: sortBy
+          in: path
+          required: false
+          description: Sort by parameter
+          schema:
+            type: string
+            enum:
+              - articleId
+              - tagId
+              - createdAt
+              - updatedAt
+        - name: order
+          in: path
+          required: false
+          description: Order parameter
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: query
+          in: path
+          required: false
+          description: Query to search by article title, or tag title
+          schema:
+            type: string
+        - name: articleId
+          in: path
+          required: false
+          description: articleId to filter by
+          schema:
+            type: string
+        - name: tagId
+          in: path
+          required: false
+          description: tagId to filter by
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A list of articleTags
+          content:
+            application/json:
+              example:
+                - articleId: 4
+                  tagId: 3
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  article:
+                    id: 3
+                    title: Dummy article
+                    content: Dummy
+                    authorId: 1
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+                    published: false
+                    categoryId: 1
+                    subcategoryId: null
+                  tag:
+                    id: 4
+                    title: jovens
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+                - articleId: 4
+                  tagId: 3
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  article:
+                    id: 3
+                    title: Dummy article
+                    content: Dummy
+                    authorId: 1
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+                    published: false
+                    categoryId: 1
+                    subcategoryId: null
+                  tag:
+                    id: 4
+                    title: jovens
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/articleTags/:
+    post:
+      summary: Create a articleTag
+      tags:
+        - ArticleTags
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                articleId:
+                  required: true
+                  type: integer
+                tagId:
+                  required: true
+                  type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                articleId: 4
+                tagId: 3
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                article:
+                  id: 3
+                  title: Dummy article
+                  content: Dummy
+                  authorId: 1
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  published: false
+                  categoryId: 1
+                  subcategoryId: null
+                tag:
+                  id: 4
+                  title: jovens
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/backoffice/articleTags/{articleId}/{tagId}:
+    get:
+      summary: Get a articleTag
+      tags:
+        - ArticleTags
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: articleId
+          in: path
+          required: true
+          description: The auto-generated id of the article
+          schema:
+            type: integer
+        - name: tagId
+          in: path
+          required: true
+          description: The auto-generated id of the tag
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                articleId: 4
+                tagId: 3
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                article:
+                  id: 3
+                  title: Dummy article
+                  content: Dummy
+                  authorId: 1
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  published: false
+                  categoryId: 1
+                  subcategoryId: null
+                tag:
+                  id: 4
+                  title: jovens
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    patch:
+      summary: Update a articleTag
+      tags:
+        - ArticleTags
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: articleId
+          in: path
+          required: true
+          description: The auto-generated id of the article
+          schema:
+            type: integer
+        - name: tagId
+          in: path
+          required: true
+          description: The auto-generated id of the tag
+          schema:
+            type: integer
+      requestBody:
+        - name: newArticleId
+          in: path
+          required: false
+          description: New articleId to update to
+          schema:
+            type: integer
+        - name: newTagId
+          in: path
+          required: false
+          description: New tagId to update to
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                articleId: 4
+                tagId: 3
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                article:
+                  id: 3
+                  title: Dummy article
+                  content: Dummy
+                  authorId: 1
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  published: false
+                  categoryId: 1
+                  subcategoryId: null
+                tag:
+                  id: 4
+                  title: jovens
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    delete:
+      summary: Delete a articleTag
+      tags:
+        - ArticleTags
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: articleId
+          in: path
+          required: true
+          description: The auto-generated id of the article
+          schema:
+            type: integer
+        - name: tagId
+          in: path
+          required: true
+          description: The auto-generated id of the tag
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                articleId: 4
+                tagId: 3
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                article:
+                  id: 3
+                  title: Dummy article
+                  content: Dummy
+                  authorId: 1
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  published: false
+                  categoryId: 1
+                  subcategoryId: null
+                tag:
+                  id: 4
+                  title: jovens
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/articles/:
+    get:
+      summary: Get list of all articles, according to user role (Admin gets ALL articles, CC gets own articles, others get approved articles)
+      tags:
+        - Articles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sortBy
+          in: path
+          required: false
+          description: Sort by parameter
+          schema:
+            type: string
+            enum:
+              - id
+              - title
+              - authorId
+              - createdAt
+              - updatedAt
+              - published
+              - categoryId
+        - name: order
+          in: path
+          required: false
+          description: Order (ascending or descending)
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: pageNumber
+          in: path
+          required: false
+          description: Page number of results, requires pageSize to be defined too
+          schema:
+            type: int
+        - name: pageSize
+          in: path
+          required: false
+          description: Number of results per page. Requires pageNumber to be defined too.
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: Admin Title
+                content: Admin article content
+                authorId: 1
+                createdAt: 2023-11-23T16:51:55.028Z
+                updatedAt: 2023-11-23T18:40:42.499Z
+                published: false
+                categoryId: 1
+                subcategoryId: null
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    post:
+      summary: Add a new article
+      tags:
+        - Articles
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                category_id:
+                  type: int
+      responses:
+        "200":
+          desciption: Success response
+          content:
+            application/json:
+              example:
+                id: 4
+                title: Title Dummy
+                content: Content Dummy
+                authorId: 2
+                createdAt: 2023-11-27T18:03:36.638Z
+                updatedAt: 2023-11-27T18:03:36.638Z
+                published: false
+                categoryId: 1
+                subcategoryId: null
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/articles/{id}:
+    get:
+      summary: Get a single article by ID (Admins can see non published articles, CCs only see own articles and others see approved posts)
+      tags:
+        - Articles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the article
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  title: Admin Title
+                  content: Admin article content
+                  authorId: 1
+                  createdAt: 2023-11-23T16:51:55.028Z
+                  updatedAt: 2023-11-23T18:40:42.499Z
+                  published: false
+                  categoryId: 1
+                  subcategoryId: null
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    patch:
+      summary: Update an article (if published submit an editSubmission, otherwise edit directly)
+      tags:
+        - Articles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the article
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                content: Content Dummy Update
+                published: false
+                articleId: 3
+                createdAt: 2023-11-23T19:59:14.552Z
+                updatedAt: 2023-11-27T18:12:31.326Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+    delete:
+      summary: Delete a article
+      tags:
+        - Articles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the article
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 2
+                title: Admin title
+                content: Admin content
+                authorId: 2
+                createdAt: 2023-11-23T16:51:55.028Z
+                updatedAt: 2023-11-23T16:51:55.028Z
+                published: false
+                categoryId: 1
+                subcategoryId: null
+        "403":
+          description: You do not have permission to update this article
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        "404":
+          description: No such post found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
+  /api/articles/{id}/approve:
+    patch:
+      summary: Approve an article/editSubmission (requires admin)
+      tags:
+        - Articles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the article
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 3
+                title: Testing title updates cc
+                content: Content Dummy Updates
+                authorId: 3
+                createdAt: 2023-11-23T18:10:58.433Z
+                updatedAt: 2023-11-27T18:19:32.326Z
+                published: true
+                categoryId: 1
+                subcategoryId: null
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralError"
