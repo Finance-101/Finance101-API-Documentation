@@ -13,76 +13,6 @@ servers:
   - url: "http://localhost:3000/"
 components:
   schemas:
-    GeneralError:
-      description: General Error used for error messages
-      type: object
-      properties:
-        errorName:
-          type: string
-        error:
-          type: string
-    InvalidBooleanParamError:
-      description: Error for invalid boolean parameter
-      type: object
-      properties:
-        error:
-          type: string
-        statusCode:
-          type: integer
-          format: int32
-    InvalidPaginationParamsError:
-      description: Error for invalid pagination parameters
-      type: object
-      properties:
-        error:
-          type: string
-        statusCode:
-          type: integer
-          format: int32
-    InvalidSortingOptionsError:
-      description: Error for invalid sorting options
-      type: object
-      properties:
-        error:
-          type: string
-        statusCode:
-          type: integer
-          format: int32
-    MissingRequiredFieldsError:
-      description: Error for missing required fields
-      type: object
-      properties:
-        errorName:
-          type: string
-        error:
-          type: string
-        missingFields:
-          type: array
-          items:
-            type: string
-        statusCode:
-          type: integer
-          format: int32
-    PermissionDeniedError:
-      description: Permission denied error
-      type: object
-      properties:
-        errorName:
-          type: string
-        error:
-          type: string
-        statusCode:
-          type: integer
-          format: int32
-    NotFoundInDatabase:
-      description: Error for not found in the database
-      type: object
-      properties:
-        error:
-          type: string
-        statusCode:
-          type: integer
-          format: int32
     BackofficeUser:
       description: Backoffice User
       type: object
@@ -228,20 +158,76 @@ components:
           description: Timestamp the tag was updated
           type: string
   responses:
-    NotFound:
-      description: Entity not found.
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/NotFoundInDatabase"
-    IllegalInput:
-      description: Illegal input for the operation.
+    InvalidBooleanParamError:
+      description: Error for invalid boolean parameter
+      type: object
+      properties:
+        errorName:
+          type: string
+        error:
+          type: string
+    InvalidPaginationParamsError:
+      description: Error for invalid pagination parameters
+      type: object
+      properties:
+        errorName:
+          type: string
+        error:
+          type: string
+    InvalidSortingOptionsError:
+      description: Error for invalid sorting options
+      type: object
+      properties:
+        errorName:
+          type: string
+        error:
+          type: string
+    MissingRequiredFieldsError:
+      description: Error for missing required fields
+      type: object
+      properties:
+        errorName:
+          type: string
+        error:
+          type: string
+        missingFields:
+          type: array
+          items:
+            type: string
+    PermissionDeniedError:
+      description: Permission denied error
+      type: object
+      properties:
+        errorName:
+          type: string
+        error:
+          type: string
+    BadRequestError:
+      description: Bad request error
+      type: object
+      properties:
+        errorName:
+          type: string
+        error:
+          type: string
+    NotFoundInDatabaseError:
+      description: Error for not found in the database
+      type: object
+      properties:
+        errorName:
+          type: string
+        error:
+          type: string
     GeneralError:
       description: General Error
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/GeneralError"
+      type: object
+      properties:
+        errorName:
+          description: Type of error
+          type: string
+        error:
+          description: Error message
+          type: string         
 paths:
   /api/backoffice/user/list:
     get:
@@ -254,13 +240,13 @@ paths:
         - name: pageNumber
           in: path
           required: false
-          description: Page number (must be above or equal to 1)
+          description: Page number (must be above or equal to 1), must provide both pageNumber and pageSize.
           schema:
             type: integer
         - name: pageSize
           in: path
           required: false
-          description: Number of items per page
+          description: Number of items per page, must provide both pageNumber and pageSize.
           schema:
             type: integer
         - name: sortBy
@@ -342,10 +328,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/user/login:
     post:
-      summary: Login backoffice user
+      summary: Authentication endpoint for login backoffice user
       tags:
         - Backoffice Users
       requestBody:
@@ -375,6 +361,12 @@ paths:
                   - CREATE_BACKOFFICE_USER
                   - LIST_BACKOFFICE_USERS
                   - UPDATE_BACKOFFICE_USER
+        default:
+          description: Bad request error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/GeneralError'
   /api/backoffice/user/signup:
     post:
       summary: Add backoffice user
@@ -408,7 +400,7 @@ paths:
                   required: true
                   type: integer
                 isActive:
-                  required: false
+                  required: true
                   type: boolean
       responses:
         "200":
@@ -424,18 +416,12 @@ paths:
                   - CREATE_BACKOFFICE_USER
                   - LIST_BACKOFFICE_USERS
                   - UPDATE_BACKOFFICE_USER
-        "400":
-          description: Missing fields
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MissingRequiredFieldsError"
         default:
-          desciption: General error
+          description: General error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/user/{id}:
     get:
       summary: Get a single backoffice user by ID
@@ -497,7 +483,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     patch:
       summary: Update a backoffice user
       tags:
@@ -554,13 +540,54 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PermissionDeniedError"
+                $ref: "#/components/responses/PermissionDeniedError"
         default:
           description: General Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"     
+                $ref: "#/components/responses/GeneralError"    
+    delete:
+      summary: Delete a backoffice user (can not delete own account)
+      tags:
+        - Backoffice Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the backoffice user
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                username: admin
+                password: hashedPassword
+                firstName: Admin
+                lastName: User
+                email: admin@gmail.com
+                roleId: 1
+                createdAt: 2023-11-13T18:38:08.122Z
+                updatedAt: 2023-11-14T09:41:08.014Z
+                isActive: true
+        "403":
+          description: Permission denied if trying to delete own account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/PermissionDeniedError"
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"     
   /api/backoffice/roles/list:
     get:
       summary: Get all backoffice roles
@@ -628,13 +655,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
         default:
           description: Error message
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/roles/{id}:
     get:
       summary: Get a single backoffice role by ID
@@ -686,7 +713,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     patch:
       summary: Update a backoffice role
       tags:
@@ -727,7 +754,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     delete:
       summary: Delete a backoffice role
       tags:
@@ -756,7 +783,7 @@ paths:
           description: General Error
           content:
             schema:
-              $ref: "#/components/schemas/GeneralError"
+              $ref: "#/components/responses/GeneralError"
   /api/backoffice/roles/:
     post:
       summary: Create a backoffice role
@@ -793,7 +820,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/permissions/list:
     get:
       summary: Get all backoffice permissions
@@ -892,7 +919,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     patch:
       summary: Update a backoffice permission
       tags:
@@ -933,7 +960,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     delete:
       summary: Delete a backoffice permission
       tags:
@@ -963,7 +990,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/permissions/:
     post:
       summary: Create a backoffice permission
@@ -1099,7 +1126,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/rolePermissions/{roleId}/{permissionId}:
     get:
       summary: Get a single backoffice role permission by ID
@@ -1147,7 +1174,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     patch:
       summary: Update a backoffice role permission
       tags:
@@ -1205,7 +1232,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     delete:
       summary: Delete a backoffice role permission
       tags:
@@ -1252,7 +1279,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/rolePermissions/:
     post:
       summary: Create a backoffice role permission
@@ -1286,7 +1313,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/categories/list:
     get:
       summary: Get list of categories (it will not list the categories with isPublished = false by default)
@@ -1377,7 +1404,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/categories/{id}:
     get:
       summary: Get a single category by ID
@@ -1418,7 +1445,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     patch:
       summary: Update a category
       tags:
@@ -1465,7 +1492,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     delete:
       summary: Delete a category
       tags:
@@ -1496,7 +1523,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/categories/:
     post:
       summary: Create a new category
@@ -1550,7 +1577,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/sections/list:
     get:
       summary: Get list of sections
@@ -1637,7 +1664,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/sections/{id}:
     get:
       summary: Get a single section by ID
@@ -1679,7 +1706,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     patch:
       summary: Update a section
       tags:
@@ -1735,7 +1762,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     delete:
       summary: Delete a section
       tags:
@@ -1776,7 +1803,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/sections/:
     post:
       summary: Create a section
@@ -1818,7 +1845,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GeneralError"
+              $ref: "#/components/responses/GeneralError"
   /api/backoffice/sectionArticles/list:
     get:
       summary: Get all section articles
@@ -1935,7 +1962,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/sectionArticles/:
     post:
       summary: Create a sectionArticle
@@ -1996,7 +2023,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/sectionArticles/{sectionId}/{articleId}:
     get:
       summary: Get a sectionArticle
@@ -2051,7 +2078,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     patch:
       summary: Update a SectionArticle
       tags:
@@ -2130,7 +2157,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     delete:
       summary: Delete a SectionArticle
       tags:
@@ -2167,7 +2194,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/tags/list:
     get:
       summary: Get list of tags
@@ -2233,7 +2260,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/tags/:
     post:
       summary: Create a new tag
@@ -2266,7 +2293,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/tags/{id}:
     get:
       summary: Get a single tag by ID
@@ -2296,7 +2323,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     patch:
       summary: Update a tag
       tags:
@@ -2334,7 +2361,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     delete:
       summary: Delete a tag
       tags:
@@ -2363,7 +2390,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/articleTags/list:
     get:
       summary: Get all articleTags
@@ -2471,7 +2498,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/articleTags/:
     post:
       summary: Create a articleTag
@@ -2522,7 +2549,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/backoffice/articleTags/{articleId}/{tagId}:
     get:
       summary: Get a articleTag
@@ -2573,7 +2600,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     patch:
       summary: Update a articleTag
       tags:
@@ -2636,7 +2663,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     delete:
       summary: Delete a articleTag
       tags:
@@ -2686,7 +2713,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/articles/:
     get:
       summary: Get list of all articles, according to user role (Admin gets ALL articles, CC gets own articles, others get approved articles)
@@ -2748,7 +2775,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     post:
       summary: Add a new article
       tags:
@@ -2788,7 +2815,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/articles/{id}:
     get:
       summary: Get a single article by ID (Admins can see non published articles, CCs only see own articles and others see approved posts)
@@ -2823,7 +2850,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     patch:
       summary: Update an article (if published submit an editSubmission, otherwise edit directly)
       tags:
@@ -2865,7 +2892,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
     delete:
       summary: Delete a article
       tags:
@@ -2899,19 +2926,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
         "404":
           description: No such post found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
         default:
           description: General Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
   /api/articles/{id}/approve:
     patch:
       summary: Approve an article/editSubmission (requires admin)
@@ -2946,4 +2973,4 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
+                $ref: "#/components/responses/GeneralError"
