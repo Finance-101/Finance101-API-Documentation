@@ -25,7 +25,7 @@ app.get('/api-docs',
             "https://cdn.jsdelivr.net/npm/swagger-ui-themes@3.0.0/themes/3.x/theme-material.css",
     }));
 
-const port = 8082;
+const port = 3000;
 app.listen(port, () => {
     console.log("Server started...")
 });

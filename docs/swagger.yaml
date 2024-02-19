@@ -10,7 +10,7 @@ info:
     email: dev.finance101@gmail.com
 version: 1.0.0
 servers:
-  - url: "http://localhost:3000/"
+  - url: "http://localhost:8082/"
 components:
   schemas:
     BackofficeUser:
@@ -229,7 +229,7 @@ components:
           description: Error message
           type: string         
 paths:
-  /api/backoffice/user/list:
+  /api/v1/backoffice/user/list:
     get:
       summary: Get all backoffice users, if no isActive filter provided, default is true
       tags:
@@ -329,7 +329,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/user/login:
+  /api/v1/backoffice/user/login:
     post:
       summary: Authentication endpoint for login backoffice user
       tags:
@@ -367,7 +367,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/responses/GeneralError'
-  /api/backoffice/user/signup:
+  /api/v1/backoffice/user/signup:
     post:
       summary: Add backoffice user
       tags:
@@ -422,7 +422,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/user/{id}:
+  /api/v1/backoffice/user/{id}:
     get:
       summary: Get a single backoffice user by ID
       tags:
@@ -588,7 +588,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"     
-  /api/backoffice/roles/list:
+  /api/v1/backoffice/roles/list:
     get:
       summary: Get all backoffice roles
       tags:
@@ -650,19 +650,13 @@ paths:
                   description: Content Creator role
                   createdAt: 2023-11-16T17:02:03.701Z
                   updatedAt: 2023-11-16T17:02:03.701Z
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/responses/GeneralError"
         default:
           description: Error message
           content:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/roles/{id}:
+  /api/v1/backoffice/roles/{id}:
     get:
       summary: Get a single backoffice role by ID
       tags:
@@ -784,7 +778,7 @@ paths:
           content:
             schema:
               $ref: "#/components/responses/GeneralError"
-  /api/backoffice/roles/:
+  /api/v1/backoffice/roles/:
     post:
       summary: Create a backoffice role
       tags:
@@ -821,7 +815,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/permissions/list:
+  /api/v1/backoffice/permissions/list:
     get:
       summary: Get all backoffice permissions
       tags:
@@ -888,8 +882,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GeneralError"
-  /api/backoffice/permissions/{id}:
+                $ref: "#/components/responses/GeneralError"
+  /api/v1/backoffice/permissions/{id}:
     get:
       summary: Get a single backoffice permission by ID
       tags:
@@ -991,7 +985,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/permissions/:
+  /api/v1/backoffice/permissions/:
     post:
       summary: Create a backoffice permission
       tags:
@@ -1025,7 +1019,7 @@ paths:
         content:
           application/json:
             schema:
-  /api/backoffice/rolePermissions/list:
+  /api/v1/backoffice/rolePermissions/list:
     get:
       summary: Get all backoffice role permissions
       tags:
@@ -1127,7 +1121,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/rolePermissions/{roleId}/{permissionId}:
+  /api/v1/backoffice/rolePermissions/{roleId}/{permissionId}:
     get:
       summary: Get a single backoffice role permission by ID
       tags:
@@ -1280,7 +1274,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/rolePermissions/:
+  /api/v1/backoffice/rolePermissions/:
     post:
       summary: Create a backoffice role permission
       tags:
@@ -1314,9 +1308,9 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/categories/list:
+  /api/v1/categories/list:
     get:
-      summary: Get list of categories (it will not list the categories with isPublished = false by default)
+      summary: Get list of categories (lists all categories by default published or not published)
       tags:
         - Categories
       security:
@@ -1405,7 +1399,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/categories/{id}:
+  /api/v1/categories/{id}:
     get:
       summary: Get a single category by ID
       tags:
@@ -1467,12 +1461,16 @@ paths:
               type: object
               properties:
                 title:
+                  required: false
                   type: string
                 description:
+                  required: false
                   type: string
                 parentCategoryId:
+                  required: false
                   type: integer
                 isPublished:
+                  required: false
                   type: boolean
       responses:
         "200":
@@ -1524,9 +1522,9 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/categories/:
+  /api/v1/categories/:
     post:
-      summary: Create a new category
+      summary: Create a new category (if isPublished is not provided, default = true)
       tags:
         - Categories
       security:
@@ -1563,15 +1561,6 @@ paths:
                 updatedAt: 2023-11-16T17:02:03.701Z
                 parentCategoryId: 1
                 isPublished: false
-        "400":
-          description: Error response if required fields are not filled
-          content:
-            application/json:
-              example:
-                error: Please fill in all required fields
-                missingFields:
-                  - title
-                  - description
         default:
           description: Error message
           content:
