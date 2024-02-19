@@ -1860,7 +1860,7 @@ paths:
           application/json:
             schema:
               $ref: "#/components/responses/GeneralError"
-  /api/backoffice/sectionArticles/list:
+  /api/v1/sectionArticles/list:
     get:
       summary: Get all section articles
       tags:
@@ -1977,7 +1977,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/sectionArticles/:
+  /api/v1/sectionArticles/:
     post:
       summary: Create a sectionArticle
       tags:
@@ -2038,7 +2038,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/sectionArticles/{sectionId}/{articleId}:
+  /api/v1/sectionArticles/{sectionId}/{articleId}:
     get:
       summary: Get a sectionArticle
       tags:
