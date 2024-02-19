@@ -1567,9 +1567,9 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/sections/list:
+  /api/v1/sections/list:
     get:
-      summary: Get list of sections
+      summary: Get list of sections and its associated quizzes and articles
       tags:
         - Sections
       security:
@@ -1599,6 +1599,7 @@ paths:
               - categoryId
               - createdAt
               - updatedAt
+              - complexityLevel
         - name: order
           in: path
           required: false
@@ -1619,7 +1620,13 @@ paths:
           required: false
           description: Filter by categoryId
           schema:
-            type: string
+            type: integer
+        - name: complexityLevel
+          in: path
+          required: false
+          description: Filter by complexityLevel
+          schema:
+            type: integer
       responses:
         "200":
           description: Success response
@@ -1629,32 +1636,42 @@ paths:
                 - id: 1
                   title: Investimentos básicos
                   description: Aprende sobre como investir...
-                  createdAt: 2023-11-16T17:02:03.701Z
-                  updatedAt: 2023-11-16T17:02:03.701Z
+                  complexityLevel: 1
                   categoryId: 1
-                - id: 2
-                  title: Poupanças básico
-                  description: Aprende a poupar o teu dinheiro...
                   createdAt: 2023-11-16T17:02:03.701Z
                   updatedAt: 2023-11-16T17:02:03.701Z
-                  categoryId: 2
                   category:
-                    id: 2
-                    title: Poupanças
-                    description: Como poupar...
-                    parentCategoryId: 4
-                    parentCategory:
-                      id: 4
-                      title: Hello
-                      description: Saying hello..
-                      parentCategoryId: 2
+                    id: 1
+                    title: "Investimentos"
+                    description: "Como investir..."
+                    isPublished: true
+                    parentCategory: 
+                      id: 1
+                      title: "Pai dos investimentos"
+                      description: "Categoria pai"
+                      isPublished: true
+                  quizzes:
+                    - id: 1
+                      title: Teste quizz
+                      description: teste quizz
+                      createdAt: 2023-11-16T17:02:03.701Z
+                      updatedAt: 2023-11-16T17:02:03.701Z
+                      isActive: true
+                      sectionId: 1
+                  sectionArticles:
+                    - sectionId: 1
+                      articleId: 1
+                      title: "Investimentos Básicos"
+                      desciption: "Investir..."
+                      createdAt: 2023-11-16T17:02:03.701Z
+                      updatedAt: 2023-11-16T17:02:03.701Z     
         default:
           description: Error message
           content:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/sections/{id}:
+  /api/v1/sections/{id}:
     get:
       summary: Get a single section by ID
       tags:
@@ -1675,21 +1692,37 @@ paths:
             application/json:
               example:
                 id: 1
-                title: Investimentos Básicos
-                description: Como investir...
+                title: Investimentos básicos
+                description: Aprende sobre como investir...
+                complexityLevel: 1
+                categoryId: 1
                 createdAt: 2023-11-16T17:02:03.701Z
                 updatedAt: 2023-11-16T17:02:03.701Z
-                categoryId: 2
                 category:
-                  id: 2
-                  title: Aaaaa
-                  description: aaa...
-                  parentCategoryId: 4
-                  parentCategory:
-                    id: 4
-                    title: Hello
-                    description: Saying hello..
-                    parentCategoryId: 2
+                  id: 1
+                  title: "Investimentos"
+                  description: "Como investir..."
+                  isPublished: true
+                  parentCategory: 
+                    id: 1
+                    title: "Pai dos investimentos"
+                    description: "Categoria pai"
+                    isPublished: true
+                quizzes:
+                  - id: 1
+                    title: Teste quizz
+                    description: teste quizz
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+                    isActive: true
+                    sectionId: 1
+                sectionArticles:
+                  - sectionId: 1
+                    articleId: 1
+                    title: "Investimentos Básicos"
+                    desciption: "Investir..."
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z     
         default:
           description: Error message
           content:
@@ -1717,10 +1750,17 @@ paths:
               type: object
               properties:
                 title:
+                  required: false
                   type: string
                 description:
+                  required: false
                   type: string
                 categoryId:
+                  required: false
+                  type: integer
+                  format: int64
+                complexityLevel:
+                  required: false
                   type: integer
                   format: int64
       responses:
@@ -1732,20 +1772,10 @@ paths:
                 id: 1
                 title: Investimentos Básicos
                 description: Como investir...
+                complexityLevel: 1
                 createdAt: 2023-11-16T17:02:03.701Z
                 updatedAt: 2023-11-16T17:02:03.701Z
                 categoryId: 2
-                category:
-                  id: 2
-                  title: Aaaaa
-                  description: aaa...
-                  parentCategoryId: 4
-                  parentCategory:
-                    id: 4
-                    title: Hello
-                    description: Saying hello..
-                    parentCategoryId: 2
-
         default:
           description: Error message
           content:
@@ -1774,28 +1804,19 @@ paths:
                 id: 1
                 title: Investimentos Básicos
                 description: Como investir...
+                complexityLevel: 1
                 createdAt: 2023-11-16T17:02:03.701Z
                 updatedAt: 2023-11-16T17:02:03.701Z
                 categoryId: 2
-                category:
-                  id: 2
-                  title: Aaaaa
-                  description: aaa...
-                  parentCategoryId: 4
-                  parentCategory:
-                    id: 4
-                    title: Hello
-                    description: Saying hello..
-                    parentCategoryId: 2
         default:
           description: Error message
           content:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/sections/:
+  /api/v1/sections/:
     post:
-      summary: Create a section
+      summary: Create a section (if complexityLevel is not provided, default will be 1)
       tags:
         - Sections
       security:
@@ -1815,6 +1836,10 @@ paths:
                   type: string
                 categoryId:
                   required: true
+                  type: integer
+                  format: int64
+                complexityLevel:
+                  required: false
                   type: integer
                   format: int64
       responses:
