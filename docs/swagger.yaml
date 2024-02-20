@@ -285,13 +285,13 @@ paths:
           required: false
           description: Filter by roleId
           schema:
-            type: string
+            type: integer
         - name: isActive
           in: path
           required: false
           description: Filter by isActive
           schema:
-            type: string
+            type: boolean
             enum:
               - true
               - false
@@ -2209,7 +2209,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/tags/list:
+  /api/v1/tags/list:
     get:
       summary: Get list of tags
       tags:
@@ -2275,7 +2275,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/tags/:
+  /api/v1/tags/:
     post:
       summary: Create a new tag
       tags:
@@ -2290,6 +2290,7 @@ paths:
               type: object
               properties:
                 title:
+                  required: true
                   description: Backend will lowercase this parameter for consistency
                   type: string
       responses:
@@ -2308,7 +2309,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/tags/{id}:
+  /api/v1/tags/{id}:
     get:
       summary: Get a single tag by ID
       tags:
@@ -2405,7 +2406,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/articleTags/list:
+  /api/v1/articleTags/list:
     get:
       summary: Get all articleTags
       tags:
@@ -2456,13 +2457,13 @@ paths:
           required: false
           description: articleId to filter by
           schema:
-            type: string
+            type: integer
         - name: tagId
           in: path
           required: false
           description: tagId to filter by
           schema:
-            type: string
+            type: integer
       responses:
         "200":
           description: A list of articleTags
@@ -2513,7 +2514,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/articleTags/:
+  /api/v1/articleTags/:
     post:
       summary: Create a articleTag
       tags:
@@ -2564,7 +2565,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/backoffice/articleTags/{articleId}/{tagId}:
+  /api/v1/articleTags/{articleId}/{tagId}:
     get:
       summary: Get a articleTag
       tags:
