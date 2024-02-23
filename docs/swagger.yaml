@@ -1567,6 +1567,62 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
+  /api/v1/quizzes/:
+    post:
+      summary: Create a new quizz (if isActive is not provided, default = false)
+      tags:
+        - Quizzes
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  required: true
+                  type: string
+                description:
+                  required: true
+                  type: string
+                isActive:
+                  required: false
+                  type: boolean
+                  default: false
+                difficultyLevel:
+                  required: false
+                  type: integer
+                  desciption: must be between 1 or 3 (including)
+                  default: 1
+                sectionId:
+                  required: true
+                  type: integer
+                authorId:
+                  required: true
+                  type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: Quizz title
+                description: Description
+                createdAt: 2023-11-16T17:02:03.701Z
+                isActive: false
+                difficultyLevel: 1
+                sectionId: 1
+                authorId: 1
+                updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
   /api/v1/sections/list:
     get:
       summary: Get list of sections and its associated quizzes and articles
