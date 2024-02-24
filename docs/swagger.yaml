@@ -1777,6 +1777,191 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
+    patch:
+      summary: Update a quizz
+      tags:
+        - Quizzes
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  required: false
+                  type: string
+                description:
+                  required: false
+                  type: string
+                isActive:
+                  required: false
+                  type: boolean
+                  default: false
+                difficultyLevel:
+                  required: false
+                  type: integer
+                  description: must be between 1 or 3 (including)
+                  default: 1
+                sectionId:
+                  required: false
+                  type: integer
+                authorId:
+                  required: false
+                  type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: Quizz title
+                description: Description
+                createdAt: 2023-11-16T17:02:03.701Z
+                isActive: false
+                difficultyLevel: 1
+                sectionId: 1
+                authorId: 1
+                updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+    delete:
+      summary: Delete a quizz (can not delete if it has questions or options -> force delete to be implemented soon!)
+      tags:
+        - Quizzes
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: quizzId
+          in: path
+          required: true
+          description: auto-generated id of the quizz
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                title: Quizz title
+                description: Description
+                createdAt: 2023-11-16T17:02:03.701Z
+                isActive: false
+                difficultyLevel: 1
+                sectionId: 1
+                authorId: 1
+                updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+  /api/v1/quizzes/questions/list:
+    get:
+      summary: List of questions
+      tags:
+        - Quizzes
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pageNumber
+          in: path
+          required: false
+          description: Page number (must be above or equal to 1)
+          schema:
+            type: integer
+        - name: pageSize
+          in: path
+          required: false
+          description: Number of items per page
+          schema:
+            type: integer
+        - name: sortBy
+          in: path
+          required: false
+          description: Sort by parameter
+          schema:
+            type: string
+            enum:
+              - id
+              - isActive
+              - questionText
+              - quizzId
+              - createdAt
+              - updatedAt
+        - name: order
+          in: path
+          required: false
+          description: Order parameter
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: query
+          in: path
+          required: false
+          description: Query to search by questionText
+          schema:
+            type: string
+        - name: isActive
+          in: path
+          required: false
+          description: Filter by isActive
+          schema:
+            type: boolean
+        - name: quizzId
+          in: path
+          required: false
+          description: Filter by quizzId
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                questionText: O que são ETFS?
+                isActive: false
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                quizzOrderIndex: 1
+                quizzId: 1
+                quizz: 
+                  id: 1
+                  title: absabsa
+                  description: absabsa
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  isActive: true
+                  difficultyLevel: 3
+                  sectionId: 1
+                  authorId: 2
+                questionOptions:
+                  - id: 1
+                    optionText: absabsa
+                    isCorrect: true
+                    questionId: 1
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
   /api/v1/quizzes/{quizzId}/new-question:
     post:
       summary: Create a new question (if isActive is not provided, default = false)
