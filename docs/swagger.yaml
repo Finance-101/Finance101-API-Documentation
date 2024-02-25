@@ -1670,7 +1670,7 @@ paths:
                     isActive: true
                     createdAt: 2023-11-16T17:02:03.701Z
                     updatedAt: 2023-11-16T17:02:03.701Z
-                    quizzOrderIndex: 1
+                    quizOrderIndex: 1
                     quizzId: 1
         default:
           description: Error message
@@ -1769,7 +1769,7 @@ paths:
                     isActive: true
                     createdAt: 2023-11-16T17:02:03.701Z
                     updatedAt: 2023-11-16T17:02:03.701Z
-                    quizzOrderIndex: 1
+                    quizOrderIndex: 1
                     quizzId: 1
         default:
           description: Error message
@@ -1866,6 +1866,172 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
+  /api/v1/quizzes/{quizzId}/{questionId}:
+    get:
+      summary: Question detail
+      tags:
+        - Quizzes
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: quizzId
+          in: path
+          required: false
+          description: Unique identifier of the quizz
+          schema:
+            type: integer
+        - name: questionId
+          in: path
+          required: false
+          description: Unique identifier of the question
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                questionText: O que são ETFS?
+                isActive: false
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                quizOrderIndex: 1
+                quizzId: 1
+                quizz: 
+                  id: 1
+                  title: absabsa
+                  description: absabsa
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  isActive: true
+                  difficultyLevel: 3
+                  sectionId: 1
+                  authorId: 2
+                questionOptions:
+                  - id: 1
+                    optionText: absabsa
+                    isCorrect: true
+                    questionId: 1
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+    patch:
+      summary: Update a question
+      tags:
+        - Quizzes
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: quizzId
+          in: path
+          required: false
+          description: Unique identifier of the quizz
+          schema:
+            type: integer
+        - name: questionId
+          in: path
+          required: false
+          description: Unique identifier of the question
+          schema:
+            type: integer
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                questionText:
+                  required: false
+                  type: string
+                isActive:
+                  required: false
+                  type: boolean
+                  default: false
+                quizOrderIndex:
+                  required: false
+                  type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                questionText: O que são ETFS?
+                isActive: false
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                quizOrderIndex: 1
+                quizzId: 1
+                quizz: 
+                  id: 1
+                  title: absabsa
+                  description: absabsa
+                  createdAt: 2023-11-16T17:02:03.701Z
+                  updatedAt: 2023-11-16T17:02:03.701Z
+                  isActive: true
+                  difficultyLevel: 3
+                  sectionId: 1
+                  authorId: 2
+                questionOptions:
+                  - id: 1
+                    optionText: absabsa
+                    isCorrect: true
+                    questionId: 1
+                    createdAt: 2023-11-16T17:02:03.701Z
+                    updatedAt: 2023-11-16T17:02:03.701Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+    delete:
+      summary: Delete a question
+      tags:
+        - Quizzes
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: quizzId
+          in: path
+          required: true
+          description: Unique identifier of the quizz
+          schema:
+            type: integer
+        - name: questionId
+          in: path
+          required: true
+          description: Unique identifier of the question
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 1
+                questionText: O que são ETFS?
+                isActive: false
+                createdAt: 2023-11-16T17:02:03.701Z
+                updatedAt: 2023-11-16T17:02:03.701Z
+                quizOrderIndex: 1
+                quizzId: 1
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
   /api/v1/quizzes/questions/list:
     get:
       summary: List of questions
@@ -1932,30 +2098,30 @@ paths:
           content:
             application/json:
               example:
-                id: 1
-                questionText: O que são ETFS?
-                isActive: false
-                createdAt: 2023-11-16T17:02:03.701Z
-                updatedAt: 2023-11-16T17:02:03.701Z
-                quizzOrderIndex: 1
-                quizzId: 1
-                quizz: 
-                  id: 1
-                  title: absabsa
-                  description: absabsa
+                - id: 1
+                  questionText: O que são ETFS?
+                  isActive: false
                   createdAt: 2023-11-16T17:02:03.701Z
                   updatedAt: 2023-11-16T17:02:03.701Z
-                  isActive: true
-                  difficultyLevel: 3
-                  sectionId: 1
-                  authorId: 2
-                questionOptions:
-                  - id: 1
-                    optionText: absabsa
-                    isCorrect: true
-                    questionId: 1
+                  quizOrderIndex: 1
+                  quizzId: 1
+                  quizz: 
+                    id: 1
+                    title: absabsa
+                    description: absabsa
                     createdAt: 2023-11-16T17:02:03.701Z
                     updatedAt: 2023-11-16T17:02:03.701Z
+                    isActive: true
+                    difficultyLevel: 3
+                    sectionId: 1
+                    authorId: 2
+                  questionOptions:
+                    - id: 1
+                      optionText: absabsa
+                      isCorrect: true
+                      questionId: 1
+                      createdAt: 2023-11-16T17:02:03.701Z
+                      updatedAt: 2023-11-16T17:02:03.701Z
         default:
           description: Error message
           content:
@@ -2001,7 +2167,7 @@ paths:
                 isActive: false
                 createdAt: 2023-11-16T17:02:03.701Z
                 updatedAt: 2023-11-16T17:02:03.701Z
-                quizzOrderIndex: 1
+                quizOrderIndex: 1
                 quizzId: 1
         default:
           description: Error message
