@@ -1308,6 +1308,166 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
+  /api/v1/user/signup:
+    post:
+      summary: Register for a regular Finance101 account.
+      tags:
+        - Frontpage Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  required: true
+                  type: string
+                username:
+                  required: true
+                  type: string
+                password:
+                  required: true
+                  type: string
+                firstName:
+                  required: true
+                  type: string
+                lastName:
+                  required: true
+                  type: string
+                birthdate:
+                  required: true
+                  type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 4
+                username: basicUser
+                token: hashedToken
+        default:
+          description: General error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+  /api/v1/user/login:
+    post:
+      summary: Log in an existing frontpage user
+      tags:
+        - Frontpage Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  required: true
+                  type: string
+                password:
+                  required: true
+                  type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 4
+                email: basicUser4@gmail.com
+                token: hashedToken
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+  /api/v1/user:
+    get:
+      summary: Get logged in user details (bearer token)
+      tags:
+        - Frontpage Users
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 4
+                username: basicUser4
+                email: basicUser4@gmail.com
+                firstName: Regular
+                lastName: User
+                birthDate: 2002-04-01T00:00:00.000Z
+                createdAt: 2024-03-02T13:20:38.718Z
+                updatedAt: 2024-03-02T13:20:38.718Z
+                isActive: true
+                userTypeId: 1
+                userType: Normal
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+    patch:
+      summary: Update logged in user using bearer token (all inputs optional)
+      tags:
+        - Frontpage Users
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  required: false
+                  type: string
+                password:
+                  required: false
+                  type: string
+                firstName:
+                  required: false
+                  type: string
+                lastName:
+                  required: false
+                  type: string
+                birthdate:
+                  required: false
+                  type: string
+                email:
+                  required: false
+                  type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                iid: 4
+                username: basicUser4
+                email: basicUser4@gmail.com
+                firstName: Regular
+                lastName: User
+                birthDate: 2002-04-01T00:00:00.000Z
+                createdAt: 2024-03-02T13:20:38.718Z
+                updatedAt: 2024-03-02T13:20:38.718Z
+                isActive: true
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
   /api/v1/categories/list:
     get:
       summary: Get list of categories (lists all categories by default published or not published)
