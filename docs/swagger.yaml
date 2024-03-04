@@ -3866,7 +3866,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/articles/:
+  /api/v1/articles/list:
     get:
       summary: Get list of all articles, according to user role (Admin gets ALL articles, CC gets own articles, others get approved articles)
       tags:
@@ -3887,6 +3887,7 @@ paths:
               - createdAt
               - updatedAt
               - published
+              - premium
               - categoryId
         - name: order
           in: path
@@ -3897,6 +3898,12 @@ paths:
             enum:
               - asc
               - desc
+        - name: query
+          in: path
+          required: false
+          description: Query for title or content search
+          schema:
+            type: string
         - name: pageNumber
           in: path
           required: false
@@ -3913,21 +3920,32 @@ paths:
           content:
             application/json:
               example:
-                id: 1
-                title: Admin Title
-                content: Admin article content
-                authorId: 1
-                createdAt: 2023-11-23T16:51:55.028Z
-                updatedAt: 2023-11-23T18:40:42.499Z
-                published: false
-                categoryId: 1
-                subcategoryId: null
+                - id: 1
+                  title: Básicos do investimento
+                  content: Conteúdo sobre investimento
+                  authorId: 1
+                  createdAt: 2023-11-23T16:51:55.028Z
+                  updatedAt: 2023-11-23T18:40:42.499Z
+                  published: false
+                  premium: false
+                  categoryId: 1
+                  subcategoryId: null
+                  tags:
+                    - tag:
+                        id: 4
+                        title: investimentos
+                    - tag:
+                        id: 6
+                        title: jovens
+                  _count:
+                    likes: 20
         default:
           description: Error message
           content:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
+  /api/v1/articles:
     post:
       summary: Add a new article
       tags:
@@ -3945,7 +3963,7 @@ paths:
                   type: string
                 content:
                   type: string
-                category_id:
+                categoryId:
                   type: int
       responses:
         "200":
@@ -3960,6 +3978,7 @@ paths:
                 createdAt: 2023-11-27T18:03:36.638Z
                 updatedAt: 2023-11-27T18:03:36.638Z
                 published: false
+                premium: false
                 categoryId: 1
                 subcategoryId: null
         default:
@@ -3995,8 +4014,18 @@ paths:
                   createdAt: 2023-11-23T16:51:55.028Z
                   updatedAt: 2023-11-23T18:40:42.499Z
                   published: false
+                  premium: false
                   categoryId: 1
                   subcategoryId: null
+                  tags:
+                    - tag:
+                        id: 4
+                        title: investimentos
+                    - tag:
+                        id: 6
+                        title: jovens
+                  _count:
+                    likes: 20
         default:
           description: Error message
           content:
@@ -4034,11 +4063,15 @@ paths:
             application/json:
               example:
                 id: 1
+                title: Testing title updates
                 content: Content Dummy Update
+                authorId: 1
                 published: false
-                articleId: 3
+                premium: false
                 createdAt: 2023-11-23T19:59:14.552Z
                 updatedAt: 2023-11-27T18:12:31.326Z
+                categoryId: 1
+                subcategoryId: null
         default:
           description: Error message
           content:
@@ -4046,7 +4079,7 @@ paths:
               schema:
                 $ref: "#/components/responses/GeneralError"
     delete:
-      summary: Delete a article
+      summary: Delete an article
       tags:
         - Articles
       security:
@@ -4071,6 +4104,7 @@ paths:
                 createdAt: 2023-11-23T16:51:55.028Z
                 updatedAt: 2023-11-23T16:51:55.028Z
                 published: false
+                premium: false
                 categoryId: 1
                 subcategoryId: null
         "403":
@@ -4118,6 +4152,7 @@ paths:
                 createdAt: 2023-11-23T18:10:58.433Z
                 updatedAt: 2023-11-27T18:19:32.326Z
                 published: true
+                premium: false
                 categoryId: 1
                 subcategoryId: null
         default:
