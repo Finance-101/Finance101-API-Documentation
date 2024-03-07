@@ -3868,7 +3868,102 @@ paths:
                 $ref: "#/components/responses/GeneralError"
   /api/v1/articles/list:
     get:
-      summary: Get list of all articles, according to user role (Admin gets ALL articles, CC gets own articles, others get approved articles)
+      summary: Get list of all articles for frontpage users (only approved articles) - Send frontpage bearer token 
+      tags:
+        - Articles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: sortBy
+          in: path
+          required: false
+          description: Sort by parameter
+          schema:
+            type: string
+            enum:
+              - id
+              - title
+              - authorId
+              - createdAt
+              - updatedAt
+              - published
+              - premium
+              - categoryId
+        - name: order
+          in: path
+          required: false
+          description: Order (ascending or descending)
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: query
+          in: path
+          required: false
+          description: Query for title or content search
+          schema:
+            type: string
+        - name: pageNumber
+          in: path
+          required: false
+          description: Page number of results, requires pageSize to be defined too
+          schema:
+            type: int
+        - name: pageSize
+          in: path
+          required: false
+          description: Number of results per page. Requires pageNumber to be defined too.
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  title: Básicos do investimento
+                  content: Conteúdo sobre investimento
+                  authorId: 1
+                  createdAt: 2023-11-23T16:51:55.028Z
+                  updatedAt: 2023-11-23T18:40:42.499Z
+                  published: true
+                  premium: false
+                  categoryId: 1
+                  subcategoryId: null
+                  tags:
+                    - tag:
+                        id: 4
+                        title: investimentos
+                    - tag:
+                        id: 6
+                        title: jovens
+                  category:
+                    id: 1
+                    title: Investimentos
+                    description: Como investir...
+                    isPublished: true
+                    parentCategoryId: null
+                    createdAt: 2024-02-16T22:29:34.499Z
+                    updatedAt: 2024-02-16T22:29:34.499Z
+                  subcategory:
+                    id: 2
+                    title: Subcategoria
+                    description: Como subcategorizar
+                    isPublished: true
+                    parentCategoryId: null
+                    createdAt: 2024-02-16T22:29:34.499Z
+                    updatedAt: 2024-02-16T22:29:34.499Z
+                  _count:
+                    likes: 20
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+  /api/v1/articles/list/backoffice:
+    get:
+      summary: Get list of all articles for backoffice users, according to user role (Admin gets ALL articles, CC gets own articles) - Send backoffice user token
       tags:
         - Articles
       security:
@@ -3937,6 +4032,22 @@ paths:
                     - tag:
                         id: 6
                         title: jovens
+                  category:
+                    id: 1
+                    title: Investimentos
+                    description: Como investir...
+                    isPublished: true
+                    parentCategoryId: null
+                    createdAt: 2024-02-16T22:29:34.499Z
+                    updatedAt: 2024-02-16T22:29:34.499Z
+                  subcategory:
+                    id: 2
+                    title: Subcategoria
+                    description: Como subcategorizar
+                    isPublished: true
+                    parentCategoryId: null
+                    createdAt: 2024-02-16T22:29:34.499Z
+                    updatedAt: 2024-02-16T22:29:34.499Z
                   _count:
                     likes: 20
         default:
@@ -3989,7 +4100,7 @@ paths:
                 $ref: "#/components/responses/GeneralError"
   /api/articles/{id}:
     get:
-      summary: Get a single article by ID (Admins can see non published articles, CCs only see own articles and others see approved posts)
+      summary: Get a single article by ID for frontpage users (Only approved articles) - Send frontpage user bearer token
       tags:
         - Articles
       security:
@@ -4013,7 +4124,7 @@ paths:
                   authorId: 1
                   createdAt: 2023-11-23T16:51:55.028Z
                   updatedAt: 2023-11-23T18:40:42.499Z
-                  published: false
+                  published: true
                   premium: false
                   categoryId: 1
                   subcategoryId: null
@@ -4024,6 +4135,22 @@ paths:
                     - tag:
                         id: 6
                         title: jovens
+                  category:
+                    id: 1
+                    title: Investimentos
+                    description: Como investir...
+                    isPublished: true
+                    parentCategoryId: null
+                    createdAt: 2024-02-16T22:29:34.499Z
+                    updatedAt: 2024-02-16T22:29:34.499Z
+                  subcategory:
+                    id: 2
+                    title: Subcategoria
+                    description: Como subcategorizar
+                    isPublished: true
+                    parentCategoryId: null
+                    createdAt: 2024-02-16T22:29:34.499Z
+                    updatedAt: 2024-02-16T22:29:34.499Z
                   _count:
                     likes: 20
         default:
@@ -4121,6 +4248,67 @@ paths:
                 $ref: "#/components/responses/GeneralError"
         default:
           description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+  /api/articles/{id}/backoffice:
+    get:
+      summary: Get a single article by ID for backoffice users - Send backoffice user bearer token
+      tags:
+        - Articles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the article
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  title: Admin Title
+                  content: Admin article content
+                  authorId: 1
+                  createdAt: 2023-11-23T16:51:55.028Z
+                  updatedAt: 2023-11-23T18:40:42.499Z
+                  published: true
+                  premium: false
+                  categoryId: 1
+                  subcategoryId: null
+                  tags:
+                    - tag:
+                        id: 4
+                        title: investimentos
+                    - tag:
+                        id: 6
+                        title: jovens
+                  category:
+                    id: 1
+                    title: Investimentos
+                    description: Como investir...
+                    isPublished: true
+                    parentCategoryId: null
+                    createdAt: 2024-02-16T22:29:34.499Z
+                    updatedAt: 2024-02-16T22:29:34.499Z
+                  subcategory:
+                    id: 2
+                    title: Subcategoria
+                    description: Como subcategorizar
+                    isPublished: true
+                    parentCategoryId: null
+                    createdAt: 2024-02-16T22:29:34.499Z
+                    updatedAt: 2024-02-16T22:29:34.499Z
+                  _count:
+                    likes: 20
+        default:
+          description: Error message
           content:
             application/json:
               schema:
