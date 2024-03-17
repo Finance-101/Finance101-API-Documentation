@@ -3916,7 +3916,7 @@ paths:
           description: Number of results per page. Requires pageNumber to be defined too.
           schema:
             type: int
-        - name: categoryId
+        - name: categoryId (list, pass it like this categoryId=1,2,3 or categoryId=1 -> separated by commas)
           in: path
           required: false
           description: ID of the category to filter
@@ -4035,6 +4035,32 @@ paths:
           in: path
           required: false
           description: Number of results per page. Requires pageNumber to be defined too.
+          schema:
+            type: int
+        - name: categoryId (list, pass it like this categoryId=1,2,3 or categoryId=1 -> separated by commas)
+          in: path
+          required: false
+          description: ID of the category to filter
+          schema:
+            type: int
+        - name: subcategoryId
+          in: path
+          required: false
+          description: ID of the subcategoryId to filter
+          schema:
+            type: int
+        - name: isPremium
+          in: path
+          required: false
+          description: filter by premium articles
+          schema:
+            type: boolean
+        - name: tagId
+          in: path
+          required: false
+          description: filter by single tag (TO IMPLEMENT LIST OF TAGS!!)
+          schema:
+            type: int
       responses:
         "200":
           description: Success response
@@ -4047,7 +4073,7 @@ paths:
                   authorId: 1
                   createdAt: 2023-11-23T16:51:55.028Z
                   updatedAt: 2023-11-23T18:40:42.499Z
-                  published: false
+                  published: true
                   premium: false
                   categoryId: 1
                   subcategoryId: null
