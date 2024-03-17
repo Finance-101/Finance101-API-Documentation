@@ -3919,27 +3919,21 @@ paths:
         - name: categoryId (list, pass it like this categoryId=1,2,3 or categoryId=1 -> separated by commas)
           in: path
           required: false
-          description: ID of the category to filter
+          description: List of categoriesID filter by
           schema:
-            type: int
-        - name: subcategoryId
-          in: path
-          required: false
-          description: ID of the subcategoryId to filter
-          schema:
-            type: int
+            type: array
         - name: isPremium
           in: path
           required: false
           description: filter by premium articles
           schema:
             type: boolean
-        - name: tagId
+        - name: tagId (list, pass it like this tagId=1,2,3 or tagId=1 -> separated by commas)
           in: path
           required: false
-          description: filter by single tag (TO IMPLEMENT LIST OF TAGS!!)
+          description: List of tagId filter by
           schema:
-            type: int
+            type: array
       responses:
         "200":
           description: Success response
@@ -4040,27 +4034,21 @@ paths:
         - name: categoryId (list, pass it like this categoryId=1,2,3 or categoryId=1 -> separated by commas)
           in: path
           required: false
-          description: ID of the category to filter
+          description: List of categoriesID filter by
           schema:
-            type: int
-        - name: subcategoryId
-          in: path
-          required: false
-          description: ID of the subcategoryId to filter
-          schema:
-            type: int
+            type: array
         - name: isPremium
           in: path
           required: false
           description: filter by premium articles
           schema:
             type: boolean
-        - name: tagId
+        - name: tagId (list, pass it like this tagId=1,2,3 or tagId=1 -> separated by commas)
           in: path
           required: false
-          description: filter by single tag (TO IMPLEMENT LIST OF TAGS!!)
+          description: List of tagId filter by
           schema:
-            type: int
+            type: array
       responses:
         "200":
           description: Success response
