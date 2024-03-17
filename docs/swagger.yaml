@@ -227,7 +227,7 @@ components:
           type: string
         error:
           description: Error message
-          type: string         
+          type: string
 paths:
   /api/v1/backoffice/user/list:
     get:
@@ -366,7 +366,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/GeneralError'
+                $ref: "#/components/responses/GeneralError"
   /api/v1/backoffice/user/signup:
     post:
       summary: Add backoffice user
@@ -546,7 +546,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/responses/GeneralError"    
+                $ref: "#/components/responses/GeneralError"
     delete:
       summary: Delete a backoffice user (can not delete own account)
       tags:
@@ -587,7 +587,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/responses/GeneralError"     
+                $ref: "#/components/responses/GeneralError"
   /api/v1/backoffice/roles/list:
     get:
       summary: Get all backoffice roles
@@ -2034,12 +2034,12 @@ paths:
       security:
         - BearerAuth: []
       parameters:
-          - name: quizzId
-            in: path
-            required: true
-            description: auto-generated id of the quizz
-            schema:
-              type: integer
+        - name: quizzId
+          in: path
+          required: true
+          description: auto-generated id of the quizz
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
@@ -2146,7 +2146,7 @@ paths:
                   updatedAt: 2023-11-16T17:02:03.701Z
                   quizOrderIndex: 1
                   quizzId: 1
-                  quizz: 
+                  quizz:
                     id: 1
                     title: absabsa
                     description: absabsa
@@ -2202,7 +2202,7 @@ paths:
                 updatedAt: 2023-11-16T17:02:03.701Z
                 quizOrderIndex: 1
                 quizzId: 1
-                quizz: 
+                quizz:
                   id: 1
                   title: absabsa
                   description: absabsa
@@ -2274,7 +2274,7 @@ paths:
                 updatedAt: 2023-11-16T17:02:03.701Z
                 quizOrderIndex: 1
                 quizzId: 1
-                quizz: 
+                quizz:
                   id: 1
                   title: absabsa
                   description: absabsa
@@ -2343,18 +2343,18 @@ paths:
       security:
         - BearerAuth: []
       parameters:
-          - name: quizzId
-            in: path
-            required: true
-            description: auto-generated id of the quizz
-            schema:
-              type: integer
-          - name: questionId
-            in: path
-            required: true
-            description: auto-generated id of the question
-            schema:
-              type: integer
+        - name: quizzId
+          in: path
+          required: true
+          description: auto-generated id of the quizz
+          schema:
+            type: integer
+        - name: questionId
+          in: path
+          required: true
+          description: auto-generated id of the question
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
@@ -2381,7 +2381,7 @@ paths:
                 createdAt: 2023-11-16T17:02:03.701Z
                 updatedAt: 2023-11-16T17:02:03.701Z
                 questionId: 1
-                question: 
+                question:
                   id: 1
                   questionText: asasasasa
                   isActive: true
@@ -2389,7 +2389,7 @@ paths:
                   updatedAt: 2023-11-16T17:02:03.701Z
                   quizOrderIndex: 1
                   quizzId: 1
-                  quizz: 
+                  quizz:
                     id: 1
                     title: absabsa
                     description: absabsa
@@ -2483,7 +2483,7 @@ paths:
                   createdAt: 2023-11-16T17:02:03.701Z
                   updatedAt: 2023-11-16T17:02:03.701Z
                   questionId: 1
-                  question: 
+                  question:
                     id: 1
                     questionText: asasasasa
                     isActive: true
@@ -2491,7 +2491,7 @@ paths:
                     updatedAt: 2023-11-16T17:02:03.701Z
                     quizOrderIndex: 1
                     quizzId: 1
-                    quizz: 
+                    quizz:
                       id: 1
                       title: absabsa
                       description: absabsa
@@ -2545,7 +2545,7 @@ paths:
                 createdAt: 2023-11-16T17:02:03.701Z
                 updatedAt: 2023-11-16T17:02:03.701Z
                 questionId: 1
-                question: 
+                question:
                   id: 1
                   questionText: asasasasa
                   isActive: true
@@ -2553,7 +2553,7 @@ paths:
                   updatedAt: 2023-11-16T17:02:03.701Z
                   quizOrderIndex: 1
                   quizzId: 1
-                  quizz: 
+                  quizz:
                     id: 1
                     title: absabsa
                     description: absabsa
@@ -2619,7 +2619,7 @@ paths:
                 createdAt: 2023-11-16T17:02:03.701Z
                 updatedAt: 2023-11-16T17:02:03.701Z
                 questionId: 1
-                question: 
+                question:
                   id: 1
                   questionText: asasasasa
                   isActive: true
@@ -2627,7 +2627,7 @@ paths:
                   updatedAt: 2023-11-16T17:02:03.701Z
                   quizOrderIndex: 1
                   quizzId: 1
-                  quizz: 
+                  quizz:
                     id: 1
                     title: absabsa
                     description: absabsa
@@ -2680,7 +2680,7 @@ paths:
                 createdAt: 2023-11-16T17:02:03.701Z
                 updatedAt: 2023-11-16T17:02:03.701Z
                 questionId: 1
-                question: 
+                question:
                   id: 1
                   questionText: asasasasa
                   isActive: true
@@ -2688,7 +2688,7 @@ paths:
                   updatedAt: 2023-11-16T17:02:03.701Z
                   quizOrderIndex: 1
                   quizzId: 1
-                  quizz: 
+                  quizz:
                     id: 1
                     title: absabsa
                     description: absabsa
@@ -2782,7 +2782,7 @@ paths:
                     title: "Investimentos"
                     description: "Como investir..."
                     isPublished: true
-                    parentCategory: 
+                    parentCategory:
                       id: 1
                       title: "Pai dos investimentos"
                       description: "Categoria pai"
@@ -2801,7 +2801,7 @@ paths:
                       title: "Investimentos Básicos"
                       description: "Investir..."
                       createdAt: 2023-11-16T17:02:03.701Z
-                      updatedAt: 2023-11-16T17:02:03.701Z     
+                      updatedAt: 2023-11-16T17:02:03.701Z
         default:
           description: Error message
           content:
@@ -2840,7 +2840,7 @@ paths:
                   title: "Investimentos"
                   description: "Como investir..."
                   isPublished: true
-                  parentCategory: 
+                  parentCategory:
                     id: 1
                     title: "Pai dos investimentos"
                     description: "Categoria pai"
@@ -2859,7 +2859,7 @@ paths:
                     title: "Investimentos Básicos"
                     description: "Investir..."
                     createdAt: 2023-11-16T17:02:03.701Z
-                    updatedAt: 2023-11-16T17:02:03.701Z     
+                    updatedAt: 2023-11-16T17:02:03.701Z
         default:
           description: Error message
           content:
@@ -3868,7 +3868,7 @@ paths:
                 $ref: "#/components/responses/GeneralError"
   /api/v1/articles/list:
     get:
-      summary: Get list of all articles for frontpage users (only approved articles) - Send frontpage bearer token 
+      summary: Get list of all articles for frontpage users (only approved articles) - Send frontpage bearer token
       tags:
         - Articles
       security:
@@ -3914,6 +3914,32 @@ paths:
           in: path
           required: false
           description: Number of results per page. Requires pageNumber to be defined too.
+          schema:
+            type: int
+        - name: categoryId
+          in: path
+          required: false
+          description: ID of the category to filter
+          schema:
+            type: int
+        - name: subcategoryId
+          in: path
+          required: false
+          description: ID of the subcategoryId to filter
+          schema:
+            type: int
+        - name: isPremium
+          in: path
+          required: false
+          description: filter by premium articles
+          schema:
+            type: boolean
+        - name: tagId
+          in: path
+          required: false
+          description: filter by single tag (TO IMPLEMENT LIST OF TAGS!!)
+          schema:
+            type: int
       responses:
         "200":
           description: Success response
@@ -4343,6 +4369,276 @@ paths:
                 premium: false
                 categoryId: 1
                 subcategoryId: null
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+  /api/v1/cup/create-cup:
+    post:
+      summary: Generates a custom user path. You can force generate if user already has one via the flag forceGen
+      tags:
+        - Custom User Path
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: forceGen
+          in: path
+          required: false
+          description: Flag to generate new CUP if user already has one.
+          schema:
+            type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      questionId:
+                        type: integer
+                      weight:
+                        type: number
+                      complexityLevel:
+                        type: integer
+                userId:
+                  type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                cup:
+                  id: 1
+                  userId: 1
+                  title: CUP nível médio
+                  avgDifficulty: 2.7
+                  createdAt: 2024-03-17T11:43:57.069Z
+                  updatedAt: 2024-03-17T11:43:57.069Z
+                cupSteps:
+                  - id: 1
+                    cupId: 1
+                    sectionId: 1
+                    index: 1
+                    completed: false
+                    createdAt: 2024-03-17T11:43:57.069Z
+                    updatedAt: 2024-03-17T11:43:57.069Z
+                  - id: 2
+                    cupId: 1
+                    sectionId: 2
+                    index: 2
+                    completed: false
+                    createdAt: 2024-03-17T11:43:57.069Z
+                    updatedAt: 2024-03-17T11:43:57.069Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+  /api/v1/cup/list:
+    get:
+      summary: List of custom user paths
+      tags:
+        - Custom User Path
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pageNumber
+          in: query
+          required: false
+          description: Page number (must be above or equal to 1)
+          schema:
+            type: integer
+            minimum: 1
+        - name: pageSize
+          in: query
+          required: false
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+        - name: sortBy
+          in: query
+          required: false
+          description: Sort by parameter
+          schema:
+            type: string
+            enum:
+              - id
+              - title
+              - avgDifficulty
+              - createdAt
+              - updatedAt
+        - name: order
+          in: query
+          required: false
+          description: Order parameter
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: query
+          in: query
+          required: false
+          description: Query to search by cup title
+          schema:
+            type: string
+        - name: cupId
+          in: query
+          required: false
+          description: Filter by cupId
+          schema:
+            type: integer
+        - name: userId
+          in: query
+          required: false
+          description: Filter by userId
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: The ID of the custom user path.
+                    userId:
+                      type: integer
+                      description: The ID of the user associated with the custom user path.
+                    title:
+                      type: string
+                      description: The title of the custom user path.
+                    avgDifficulty:
+                      type: number
+                      description: The average difficulty level of the custom user path.
+                    createdAt:
+                      type: string
+                      format: date-time
+                      description: The date and time when the custom user path was created.
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      description: The date and time when the custom user path was last updated.
+                    steps:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: The ID of the cup step.
+                          cupId:
+                            type: integer
+                            description: The ID of the custom user path associated with the cup step.
+                          sectionId:
+                            type: integer
+                            description: The ID of the section associated with the cup step.
+                          index:
+                            type: integer
+                            description: The index of the cup step.
+                          completed:
+                            type: boolean
+                            description: Indicates whether the cup step is completed or not.
+                          createdAt:
+                            type: string
+                            format: date-time
+                            description: The date and time when the cup step was created.
+                          updatedAt:
+                            type: string
+                            format: date-time
+                            description: The date and time when the cup step was last updated.
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+  /api/v1/cup/{id}:
+    get:
+      summary: Get detail of custom user path
+      tags:
+        - Custom User Path
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the CUP
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the custom user path.
+                  userId:
+                    type: integer
+                    description: The ID of the user associated with the custom user path.
+                  title:
+                    type: string
+                    description: The title of the custom user path.
+                  avgDifficulty:
+                    type: number
+                    description: The average difficulty level of the custom user path.
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: The date and time when the custom user path was created.
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: The date and time when the custom user path was last updated.
+                  steps:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the cup step.
+                        cupId:
+                          type: integer
+                          description: The ID of the custom user path associated with the cup step.
+                        sectionId:
+                          type: integer
+                          description: The ID of the section associated with the cup step.
+                        index:
+                          type: integer
+                          description: The index of the cup step.
+                        completed:
+                          type: boolean
+                          description: Indicates whether the cup step is completed or not.
+                        createdAt:
+                          type: string
+                          format: date-time
+                          description: The date and time when the cup step was created.
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          description: The date and time when the cup step was last updated.
         default:
           description: Error message
           content:
