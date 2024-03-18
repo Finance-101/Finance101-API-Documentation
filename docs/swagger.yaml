@@ -4582,17 +4582,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
-  /api/v1/cup/{id}:
+  /api/v1/cup/{cupId}:
     get:
-      summary: Get detail of custom user path
+      summary: Get detail of custom user path (if you don't provide the cupId, and the user token is a frontpage user, it will fetch that user's cup)
       tags:
         - Custom User Path
       security:
         - BearerAuth: []
       parameters:
-        - name: id
+        - name: cupId
           in: path
-          required: true
+          required: false
           description: ID of the CUP
           schema:
             type: integer
@@ -4653,6 +4653,180 @@ paths:
                           type: string
                           format: date-time
                           description: The date and time when the cup step was last updated.
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+    patch:
+      summary: Update custom user path (if you don't provide the cupId, and the user token is a frontpage user, it will update that user's cup)
+      tags:
+        - Custom User Path
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: cupId
+          in: path
+          required: false
+          description: ID of the CUP
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the custom user path.
+                  userId:
+                    type: integer
+                    description: The ID of the user associated with the custom user path.
+                  title:
+                    type: string
+                    description: The title of the custom user path.
+                  avgDifficulty:
+                    type: number
+                    description: The average difficulty level of the custom user path.
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: The date and time when the custom user path was created.
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: The date and time when the custom user path was last updated.
+                  steps:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the cup step.
+                        cupId:
+                          type: integer
+                          description: The ID of the custom user path associated with the cup step.
+                        sectionId:
+                          type: integer
+                          description: The ID of the section associated with the cup step.
+                        index:
+                          type: integer
+                          description: The index of the cup step.
+                        completed:
+                          type: boolean
+                          description: Indicates whether the cup step is completed or not.
+                        createdAt:
+                          type: string
+                          format: date-time
+                          description: The date and time when the cup step was created.
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          description: The date and time when the cup step was last updated.
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+  /api/v1/cup/updateSteps/{stepId}:
+    patch:
+      summary: Update custom user path steps (user token must be from a frontpage user, it will update that user's cup) NOT IMPLEMENTED FOR BACKOFFICE!
+      tags:
+        - Custom User Path
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: stepId
+          in: path
+          required: true
+          description: ID of the step
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                index:
+                  type: integer
+                completed:
+                  type: boolean
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the cup step.
+                  cupId:
+                    type: integer
+                    description: The ID of the custom user path associated with the cup step.
+                  sectionId:
+                    type: integer
+                    description: The ID of the section associated with the cup step.
+                  index:
+                    type: integer
+                    description: The index of the cup step.
+                  completed:
+                    type: boolean
+                    description: Indicates whether the cup step is completed or not.
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: The date and time when the cup step was created.
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: The date and time when the cup step was last updated.
+                  section:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the section.
+                      title:
+                        type: string
+                        description: The title of the section.
+                      description:
+                        type: string
+                        description: The description of the section.
+                      complexityLevel:
+                        type: integer
+                        description: The complexity level of the section.
+                      categoryId:
+                        type: integer
+                        description: The ID of the category associated with the section.
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: The date and time when the section was created.
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: The date and time when the section was last updated.
         default:
           description: Error message
           content:
