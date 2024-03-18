@@ -3058,56 +3058,164 @@ paths:
             type: string
       responses:
         "200":
-          description: A list of sectionArticles
+          description: Success response
           content:
             application/json:
-              example:
-                - sectionId: 3
-                  articleId: 3
-                  title: Secção sobre...
-                  description: Investir em...
-                  createdAt: 2023-11-16T17:02:03.701Z
-                  updatedAt: 2023-11-16T17:02:03.701Z
-                  section:
-                    id: 3
-                    title: Invest....
-                    description: Investindo em...
-                    createdAt: 2023-11-16T17:02:03.701Z
-                    updatedAt: 2023-11-16T17:02:03.701Z
-                    categoryId: 7
-                  article:
-                    id: 3
-                    title: Dummy article
-                    content: Dummy
-                    authorId: 1
-                    createdAt: 2023-11-16T17:02:03.701Z
-                    updatedAt: 2023-11-16T17:02:03.701Z
-                    published: false
-                    categoryId: 1
-                    subcategoryId: null
-                - sectionId: 3
-                  articleId: 3
-                  title: Secção sobre...
-                  description: Investir em...
-                  createdAt: 2023-11-16T17:02:03.701Z
-                  updatedAt: 2023-11-16T17:02:03.701Z
-                  section:
-                    id: 3
-                    title: Invest....
-                    description: Investindo em...
-                    createdAt: 2023-11-16T17:02:03.701Z
-                    updatedAt: 2023-11-16T17:02:03.701Z
-                    categoryId: 7
-                  article:
-                    id: 3
-                    title: Dummy article
-                    content: Dummy
-                    authorId: 1
-                    createdAt: 2023-11-16T17:02:03.701Z
-                    updatedAt: 2023-11-16T17:02:03.701Z
-                    published: false
-                    categoryId: 1
-                    subcategoryId: null
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    sectionId:
+                      type: integer
+                      description: The ID of the section.
+                    articleId:
+                      type: integer
+                      description: The ID of the article.
+                    title:
+                      type: string
+                      description: The title of the article.
+                    description:
+                      type: string
+                      description: The description of the article.
+                    createdAt:
+                      type: string
+                      format: date-time
+                      description: The date and time when the article was created.
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      description: The date and time when the article was last updated.
+                    article:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the article.
+                        title:
+                          type: string
+                          description: The title of the article.
+                        content:
+                          type: string
+                          description: The content of the article.
+                        authorId:
+                          type: integer
+                          description: The ID of the author of the article.
+                        createdAt:
+                          type: string
+                          format: date-time
+                          description: The date and time when the article was created.
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          description: The date and time when the article was last updated.
+                        published:
+                          type: boolean
+                          description: Indicates whether the article is published or not.
+                        premium:
+                          type: boolean
+                          description: Indicates whether the article is premium or not.
+                        categoryId:
+                          type: integer
+                          description: The ID of the category of the article.
+                        subcategoryId:
+                          type: integer
+                          description: The ID of the subcategory of the article.
+                        category:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: The ID of the category.
+                            title:
+                              type: string
+                              description: The title of the category.
+                            description:
+                              type: string
+                              description: The description of the category.
+                            isPublished:
+                              type: boolean
+                              description: Indicates whether the category is published or not.
+                            parentCategoryId:
+                              type: integer
+                              description: The ID of the parent category.
+                            parentCategory:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  description: The ID of the parent category.
+                                title:
+                                  type: string
+                                  description: The title of the parent category.
+                                description:
+                                  type: string
+                                  description: The description of the parent category.
+                                isPublished:
+                                  type: boolean
+                                  description: Indicates whether the parent category is published or not.
+                        subcategory:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: The ID of the subcategory.
+                            title:
+                              type: string
+                              description: The title of the subcategory.
+                            description:
+                              type: string
+                              description: The description of the subcategory.
+                            isPublished:
+                              type: boolean
+                              description: Indicates whether the subcategory is published or not.
+                            parentCategoryId:
+                              type: integer
+                              description: The ID of the parent category.
+                            createdAt:
+                              type: string
+                              format: date-time
+                              description: The date and time when the subcategory was created.
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              description: The date and time when the subcategory was last updated.
+                    tags:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          articleId:
+                            type: integer
+                            description: The ID of the article.
+                          tagId:
+                            type: integer
+                            description: The ID of the tag.
+                          createdAt:
+                            type: string
+                            format: date-time
+                            description: The date and time when the tag was created.
+                          updatedAt:
+                            type: string
+                            format: date-time
+                            description: The date and time when the tag was last updated.
+                          tag:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                description: The ID of the tag.
+                              title:
+                                type: string
+                                description: The title of the tag.
+                              createdAt:
+                                type: string
+                                format: date-time
+                                description: The date and time when the tag was created.
+                              updatedAt:
+                                type: string
+                                format: date-time
+                                description: The date and time when the tag was last updated.
         default:
           description: Error message
           content:
@@ -3145,30 +3253,182 @@ paths:
           description: Success response
           content:
             application/json:
-              example:
-                sectionId: 3
-                articleId: 3
-                title: Secção sobre...
-                description: Investir em...
-                createdAt: 2023-11-16T17:02:03.701Z
-                updatedAt: 2023-11-16T17:02:03.701Z
-                section:
-                  id: 3
-                  title: Invest....
-                  description: Investindo em...
-                  createdAt: 2023-11-16T17:02:03.701Z
-                  updatedAt: 2023-11-16T17:02:03.701Z
-                  categoryId: 7
-                article:
-                  id: 3
-                  title: Dummy article
-                  content: Dummy
-                  authorId: 1
-                  createdAt: 2023-11-16T17:02:03.701Z
-                  updatedAt: 2023-11-16T17:02:03.701Z
-                  published: false
-                  categoryId: 1
-                  subcategoryId: null
+              schema:
+                type: object
+                properties:
+                  sectionId:
+                    type: integer
+                    description: The ID of the section.
+                  articleId:
+                    type: integer
+                    description: The ID of the article.
+                  title:
+                    type: string
+                    description: The title of the section article.
+                  description:
+                    type: string
+                    description: The description of the section article.
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: The date and time when the section article was created.
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: The date and time when the section article was last updated.
+                  article:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the article.
+                      title:
+                        type: string
+                        description: The title of the article.
+                      content:
+                        type: string
+                        description: The content of the article.
+                      authorId:
+                        type: integer
+                        description: The ID of the author of the article.
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: The date and time when the article was created.
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: The date and time when the article was last updated.
+                      published:
+                        type: boolean
+                        description: Indicates whether the article is published or not.
+                      premium:
+                        type: boolean
+                        description: Indicates whether the article is premium or not.
+                      categoryId:
+                        type: integer
+                        description: The ID of the category of the article.
+                      subcategoryId:
+                        type: integer
+                        description: The ID of the subcategory of the article.
+                      category:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: The ID of the category.
+                          title:
+                            type: string
+                            description: The title of the category.
+                          description:
+                            type: string
+                            description: The description of the category.
+                          isPublished:
+                            type: boolean
+                            description: Indicates whether the category is published or not.
+                          parentCategoryId:
+                            type: integer
+                            description: The ID of the parent category.
+                          parentCategory:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                description: The ID of the parent category.
+                              title:
+                                type: string
+                                description: The title of the parent category.
+                              description:
+                                type: string
+                                description: The description of the parent category.
+                              isPublished:
+                                type: boolean
+                                description: Indicates whether the parent category is published or not.
+                      subcategory:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: The ID of the subcategory.
+                          title:
+                            type: string
+                            description: The title of the subcategory.
+                          description:
+                            type: string
+                            description: The description of the subcategory.
+                          isPublished:
+                            type: boolean
+                            description: Indicates whether the subcategory is published or not.
+                          parentCategoryId:
+                            type: integer
+                            description: The ID of the parent category.
+                          createdAt:
+                            type: string
+                            format: date-time
+                            description: The date and time when the subcategory was created.
+                          updatedAt:
+                            type: string
+                            format: date-time
+                            description: The date and time when the subcategory was last updated.
+                      tags:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            articleId:
+                              type: integer
+                              description: The ID of the article.
+                            tagId:
+                              type: integer
+                              description: The ID of the tag.
+                            createdAt:
+                              type: string
+                              format: date-time
+                              description: The date and time when the tag was created.
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              description: The date and time when the tag was last updated.
+                            tag:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  description: The ID of the tag.
+                                title:
+                                  type: string
+                                  description: The title of the tag.
+                                createdAt:
+                                  type: string
+                                  format: date-time
+                                  description: The date and time when the tag was created.
+                                updatedAt:
+                                  type: string
+                                  format: date-time
+                                  description: The date and time when the tag was last updated.
+                  section:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the section.
+                      title:
+                        type: string
+                        description: The title of the section.
+                      description:
+                        type: string
+                        description: The description of the section.
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: The date and time when the section was created.
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: The date and time when the section was last updated.
+                      categoryId:
+                        type: integer
+                        description: The ID of the category of the section.
         default:
           description: Error message
           content:
@@ -3200,30 +3460,182 @@ paths:
           description: Success response
           content:
             application/json:
-              example:
-                sectionId: 3
-                articleId: 3
-                title: Secçao...
-                description: lalslassas
-                createdAt: 2023-11-16T17:02:03.701Z
-                updatedAt: 2023-11-16T17:02:03.701Z
-                section:
-                  id: 3
-                  title: Invest....
-                  description: Investindo em...
-                  createdAt: 2023-11-16T17:02:03.701Z
-                  updatedAt: 2023-11-16T17:02:03.701Z
-                  categoryId: 7
-                article:
-                  id: 3
-                  title: Dummy article
-                  content: Dummy
-                  authorId: 1
-                  createdAt: 2023-11-16T17:02:03.701Z
-                  updatedAt: 2023-11-16T17:02:03.701Z
-                  published: false
-                  categoryId: 1
-                  subcategoryId: null
+              schema:
+                type: object
+                properties:
+                  sectionId:
+                    type: integer
+                    description: The ID of the section.
+                  articleId:
+                    type: integer
+                    description: The ID of the article.
+                  title:
+                    type: string
+                    description: The title of the section article.
+                  description:
+                    type: string
+                    description: The description of the section article.
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: The date and time when the section article was created.
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: The date and time when the section article was last updated.
+                  article:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the article.
+                      title:
+                        type: string
+                        description: The title of the article.
+                      content:
+                        type: string
+                        description: The content of the article.
+                      authorId:
+                        type: integer
+                        description: The ID of the author of the article.
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: The date and time when the article was created.
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: The date and time when the article was last updated.
+                      published:
+                        type: boolean
+                        description: Indicates whether the article is published or not.
+                      premium:
+                        type: boolean
+                        description: Indicates whether the article is premium or not.
+                      categoryId:
+                        type: integer
+                        description: The ID of the category of the article.
+                      subcategoryId:
+                        type: integer
+                        description: The ID of the subcategory of the article.
+                      category:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: The ID of the category.
+                          title:
+                            type: string
+                            description: The title of the category.
+                          description:
+                            type: string
+                            description: The description of the category.
+                          isPublished:
+                            type: boolean
+                            description: Indicates whether the category is published or not.
+                          parentCategoryId:
+                            type: integer
+                            description: The ID of the parent category.
+                          parentCategory:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                description: The ID of the parent category.
+                              title:
+                                type: string
+                                description: The title of the parent category.
+                              description:
+                                type: string
+                                description: The description of the parent category.
+                              isPublished:
+                                type: boolean
+                                description: Indicates whether the parent category is published or not.
+                      subcategory:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: The ID of the subcategory.
+                          title:
+                            type: string
+                            description: The title of the subcategory.
+                          description:
+                            type: string
+                            description: The description of the subcategory.
+                          isPublished:
+                            type: boolean
+                            description: Indicates whether the subcategory is published or not.
+                          parentCategoryId:
+                            type: integer
+                            description: The ID of the parent category.
+                          createdAt:
+                            type: string
+                            format: date-time
+                            description: The date and time when the subcategory was created.
+                          updatedAt:
+                            type: string
+                            format: date-time
+                            description: The date and time when the subcategory was last updated.
+                      tags:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            articleId:
+                              type: integer
+                              description: The ID of the article.
+                            tagId:
+                              type: integer
+                              description: The ID of the tag.
+                            createdAt:
+                              type: string
+                              format: date-time
+                              description: The date and time when the tag was created.
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              description: The date and time when the tag was last updated.
+                            tag:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  description: The ID of the tag.
+                                title:
+                                  type: string
+                                  description: The title of the tag.
+                                createdAt:
+                                  type: string
+                                  format: date-time
+                                  description: The date and time when the tag was created.
+                                updatedAt:
+                                  type: string
+                                  format: date-time
+                                  description: The date and time when the tag was last updated.
+                  section:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the section.
+                      title:
+                        type: string
+                        description: The title of the section.
+                      description:
+                        type: string
+                        description: The description of the section.
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: The date and time when the section was created.
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: The date and time when the section was last updated.
+                      categoryId:
+                        type: integer
+                        description: The ID of the category of the section.
         default:
           description: Error message
           content:
@@ -3279,30 +3691,182 @@ paths:
           description: Success response
           content:
             application/json:
-              example:
-                sectionId: 3
-                articleId: 3
-                title: Secçao...
-                description: lalslassas
-                createdAt: 2023-11-16T17:02:03.701Z
-                updatedAt: 2023-11-16T17:02:03.701Z
-                section:
-                  id: 3
-                  title: Invest....
-                  description: Investindo em...
-                  createdAt: 2023-11-16T17:02:03.701Z
-                  updatedAt: 2023-11-16T17:02:03.701Z
-                  categoryId: 7
-                article:
-                  id: 3
-                  title: Dummy article
-                  content: Dummy
-                  authorId: 1
-                  createdAt: 2023-11-16T17:02:03.701Z
-                  updatedAt: 2023-11-16T17:02:03.701Z
-                  published: false
-                  categoryId: 1
-                  subcategoryId: null
+              schema:
+                type: object
+                properties:
+                  sectionId:
+                    type: integer
+                    description: The ID of the section.
+                  articleId:
+                    type: integer
+                    description: The ID of the article.
+                  title:
+                    type: string
+                    description: The title of the section article.
+                  description:
+                    type: string
+                    description: The description of the section article.
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: The date and time when the section article was created.
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: The date and time when the section article was last updated.
+                  article:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the article.
+                      title:
+                        type: string
+                        description: The title of the article.
+                      content:
+                        type: string
+                        description: The content of the article.
+                      authorId:
+                        type: integer
+                        description: The ID of the author of the article.
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: The date and time when the article was created.
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: The date and time when the article was last updated.
+                      published:
+                        type: boolean
+                        description: Indicates whether the article is published or not.
+                      premium:
+                        type: boolean
+                        description: Indicates whether the article is premium or not.
+                      categoryId:
+                        type: integer
+                        description: The ID of the category of the article.
+                      subcategoryId:
+                        type: integer
+                        description: The ID of the subcategory of the article.
+                      category:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: The ID of the category.
+                          title:
+                            type: string
+                            description: The title of the category.
+                          description:
+                            type: string
+                            description: The description of the category.
+                          isPublished:
+                            type: boolean
+                            description: Indicates whether the category is published or not.
+                          parentCategoryId:
+                            type: integer
+                            description: The ID of the parent category.
+                          parentCategory:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                description: The ID of the parent category.
+                              title:
+                                type: string
+                                description: The title of the parent category.
+                              description:
+                                type: string
+                                description: The description of the parent category.
+                              isPublished:
+                                type: boolean
+                                description: Indicates whether the parent category is published or not.
+                      subcategory:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: The ID of the subcategory.
+                          title:
+                            type: string
+                            description: The title of the subcategory.
+                          description:
+                            type: string
+                            description: The description of the subcategory.
+                          isPublished:
+                            type: boolean
+                            description: Indicates whether the subcategory is published or not.
+                          parentCategoryId:
+                            type: integer
+                            description: The ID of the parent category.
+                          createdAt:
+                            type: string
+                            format: date-time
+                            description: The date and time when the subcategory was created.
+                          updatedAt:
+                            type: string
+                            format: date-time
+                            description: The date and time when the subcategory was last updated.
+                      tags:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            articleId:
+                              type: integer
+                              description: The ID of the article.
+                            tagId:
+                              type: integer
+                              description: The ID of the tag.
+                            createdAt:
+                              type: string
+                              format: date-time
+                              description: The date and time when the tag was created.
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              description: The date and time when the tag was last updated.
+                            tag:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  description: The ID of the tag.
+                                title:
+                                  type: string
+                                  description: The title of the tag.
+                                createdAt:
+                                  type: string
+                                  format: date-time
+                                  description: The date and time when the tag was created.
+                                updatedAt:
+                                  type: string
+                                  format: date-time
+                                  description: The date and time when the tag was last updated.
+                  section:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the section.
+                      title:
+                        type: string
+                        description: The title of the section.
+                      description:
+                        type: string
+                        description: The description of the section.
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: The date and time when the section was created.
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: The date and time when the section was last updated.
+                      categoryId:
+                        type: integer
+                        description: The ID of the category of the section.
         default:
           description: Error message
           content:
