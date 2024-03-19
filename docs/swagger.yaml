@@ -588,6 +588,343 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
+  /api/v1/backoffice/frontpageUserManagement/list:
+    get:
+      summary: Get all frontpageUsers users
+      tags:
+        - FrontpageUser Management (For Backoffice Use)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: pageNumber
+          in: path
+          required: false
+          description: Page number (must be above or equal to 1), must provide both pageNumber and pageSize.
+          schema:
+            type: integer
+        - name: pageSize
+          in: path
+          required: false
+          description: Number of items per page, must provide both pageNumber and pageSize.
+          schema:
+            type: integer
+        - name: sortBy
+          in: path
+          required: false
+          description: Sort by parameter (must also provide order parameter)
+          schema:
+            type: string
+            enum:
+              - id
+              - username
+              - email
+              - firstName
+              - lastName
+              - roleId
+              - isActive
+              - createdAt
+              - updatedAt
+        - name: order
+          in: path
+          required: false
+          description: Order parameter (must also provide sortBy parameter)
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: query
+          in: path
+          required: false
+          description: Query to search user by username, email, firstName, lastName
+          schema:
+            type: string
+        - name: userTypeId
+          in: path
+          required: false
+          description: Filter by userTypeId (database default is ID 1 for Normal users and ID 2 for premium)
+          schema:
+            type: integer
+        - name: isActive
+          in: path
+          required: false
+          description: Filter by isActive
+          schema:
+            type: boolean
+            enum:
+              - true
+              - false
+      responses:
+        "200":
+          description: A list of frontpage users
+          content:
+            application/json:
+              example:
+                - id: 2
+                  userTypeId: 1
+                  username: regularUser
+                  firstName: Regular
+                  lastName: User
+                  birthdate: 2002-01-04T00:00:00
+                  isActive: true
+                  email: regularUser@gmail.com
+                  subscriptionExpiresAt: null
+                  createdAt: 2023-11-14T17:59:44.989Z
+                  updatedAt: 2023-11-14T18:00:03.469Z
+                - id: 3
+                  userTypeId: 1
+                  username: regularUser2
+                  firstName: Another
+                  lastName: User
+                  birthdate: 2002-01-04T00:00:00
+                  isActive: false
+                  email: regularUser2@gmail.com
+                  subscriptionExpiresAt: 2024-12-31T23:59:59Z
+                  createdAt: 2023-11-14T17:59:44.989Z
+                  updatedAt: 2023-11-14T18:00:03.469Z
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+  /api/v1/backoffice/frontpageUserManagement/create:
+    post:
+      summary: Create a frontpage user
+      tags:
+        - FrontpageUser Management (For Backoffice Use)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userTypeId:
+                  required: true
+                  type: integer
+                username:
+                  required: true
+                  type: string
+                password:
+                  required: true
+                  type: string
+                firstName:
+                  required: true
+                  type: string
+                lastName:
+                  required: true
+                  type: string
+                birthdate:
+                  required: true
+                  type: date
+                isActive:
+                  required: true
+                  type: boolean
+                email:
+                  required: true
+                  type: string
+                subscriptionExpiresAt:
+                  required: true
+                  type: date
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 5
+                userTypeId: 1
+                username: regularUser
+                firstName: Regular
+                lastName: User
+                birthDate: 2002-01-04T00:00:00
+                isActive: true
+                email: regularUser@gmail.com
+                subscriptionExpiresAt: null
+                createdAt: 2023-11-13T18:38:08.122Z
+                updatedAt: 2023-11-14T09:41:08.014Z
+                userType:
+                    title: Normal
+                customization: "[]"
+                preferences: "[]"
+                achievements: "[]"
+                _count:
+                    CUPs: 0
+                    likes: 0
+                    achievements: 0
+                    userQuizzes: 0
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+  /api/v1/backoffice/frontpageUserManagement/{id}:
+    get:
+      summary: Get a single frontpage user by ID
+      tags:
+        - FrontpageUser Management (For Backoffice Use)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the frontpage user
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                - id: 9
+                  userTypeId: 1
+                  username: regularUser
+                  firstName: Regular
+                  lastName: User
+                  birthdate: 2002-01-04T00:00:00Z
+                  isActive: true
+                  email: regularUser@gmail.com
+                  subscriptionExpiresAt: 2024-12-31T23:59:59Z
+                  createdAt: 2023-11-14T17:59:44.989Z
+                  updatedAt: 2023-11-14T18:00:03.469Z
+                  userType:
+                    title: Normal
+                  customization: "[]"
+                  preferences: "[]"
+                  achievements: "[]"
+                  _count:
+                    CUPs: 0
+                    likes: 0
+                    achievements: 0
+                    userQuizzes: 0
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+    patch:
+      summary: Update a frontpage user (Only updates the fields that are supplied and different from undefined)
+      tags:
+        - FrontpageUser Management (For Backoffice Use)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the frontpage user
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userTypeId:
+                  required: false
+                  type: integer
+                username:
+                  required: false
+                  type: string
+                password:
+                  required: false
+                  type: string
+                firstName:
+                  required: false
+                  type: string
+                lastName:
+                  required: false
+                  type: string
+                birthdate:
+                  required: false
+                  type: date
+                isActive:
+                  required: false
+                  type: boolean
+                email:
+                  required: false
+                  type: string
+                subscriptionExpiresAt:
+                  required: false
+                  type: date
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 5
+                userTypeId: 2
+                username: regularUser
+                firstName: Regular
+                lastName: User
+                birthDate: 2002-01-04T00:00:00
+                isActive: true
+                email: updatedEmail@gmail.com
+                subscriptionExpiresAt: null
+                createdAt: 2023-11-13T18:38:08.122Z
+                updatedAt: 2023-11-14T09:41:08.014Z
+                userType:
+                    title: Premium
+                customization: "[]"
+                preferences: "[]"
+                achievements: "[]"
+                _count:
+                    CUPs: 0
+                    likes: 0
+                    achievements: 0
+                    userQuizzes: 0
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
+    delete:
+      summary: Delete a frontpage user
+      tags:
+        - FrontpageUser Management (For Backoffice Use)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The auto-generated id of the frontpage user
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Success response
+          content:
+            application/json:
+              example:
+                id: 5
+                userTypeId: 2
+                username: regularUser
+                firstName: Regular
+                lastName: User
+                birthDate: 2002-01-04T00:00:00
+                isActive: true
+                email: updatedEmail@gmail.com
+                subscriptionExpiresAt: null
+                createdAt: 2023-11-13T18:38:08.122Z
+                updatedAt: 2023-11-14T09:41:08.014Z
+        default:
+          description: General Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
   /api/v1/backoffice/roles/list:
     get:
       summary: Get all backoffice roles
@@ -3943,6 +4280,9 @@ paths:
                 - id: 1
                   title: Básicos do investimento
                   content: Conteúdo sobre investimento
+                  coverImageURL: https://www.google.com/
+                  headerImageURL: https://www.google.com/
+                  videoURL: https://www.google.com/
                   authorId: 1
                   createdAt: 2023-11-23T16:51:55.028Z
                   updatedAt: 2023-11-23T18:40:42.499Z
@@ -4058,6 +4398,9 @@ paths:
                 - id: 1
                   title: Básicos do investimento
                   content: Conteúdo sobre investimento
+                  coverImageURL: https://www.google.com/
+                  headerImageURL: https://www.google.com/
+                  videoURL: https://www.google.com/
                   authorId: 1
                   createdAt: 2023-11-23T16:51:55.028Z
                   updatedAt: 2023-11-23T18:40:42.499Z
@@ -4116,6 +4459,18 @@ paths:
                   type: string
                 categoryId:
                   type: int
+                subcategoryId:
+                  required: false
+                  type: int
+                coverImageURL:
+                  required: false
+                  type: string
+                headerImageURL:
+                  required: false
+                  type: string
+                videoURL:
+                  required: false
+                  type: string
       responses:
         "200":
           description: Success response
@@ -4125,6 +4480,9 @@ paths:
                 id: 4
                 title: Title Dummy
                 content: Content Dummy
+                coverImageURL: https://www.google.com/
+                headerImageURL: https://www.google.com/
+                videoURL: https://www.google.com/
                 authorId: 2
                 createdAt: 2023-11-27T18:03:36.638Z
                 updatedAt: 2023-11-27T18:03:36.638Z
@@ -4161,6 +4519,9 @@ paths:
                 - id: 1
                   title: Admin Title
                   content: Admin article content
+                  coverImageURL: https://www.google.com/
+                  headerImageURL: null
+                  videoURL: null
                   authorId: 1
                   createdAt: 2023-11-23T16:51:55.028Z
                   updatedAt: 2023-11-23T18:40:42.499Z
@@ -4222,6 +4583,15 @@ paths:
                 title:
                   type: string
                 content:
+                  type: string
+                coverImageURL:
+                  required: false
+                  type: string
+                headerImageURL:
+                  required: false
+                  type: string
+                videoURL:
+                  required: false
                   type: string
       responses:
         "200":
@@ -4315,6 +4685,9 @@ paths:
                 - id: 1
                   title: Admin Title
                   content: Admin article content
+                  coverImageURL: https://www.google.com/
+                  headerImageURL: https://www.google.com/
+                  videoURL: https://www.google.com/
                   authorId: 1
                   createdAt: 2023-11-23T16:51:55.028Z
                   updatedAt: 2023-11-23T18:40:42.499Z
@@ -4376,6 +4749,9 @@ paths:
                 id: 3
                 title: Testing title updates cc
                 content: Content Dummy Updates
+                coverImageURL: https://www.google.com/
+                headerImageURL: https://www.google.com/
+                videoURL: https://www.google.com/
                 authorId: 3
                 createdAt: 2023-11-23T18:10:58.433Z
                 updatedAt: 2023-11-27T18:19:32.326Z
