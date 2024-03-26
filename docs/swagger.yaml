@@ -5542,3 +5542,71 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/responses/GeneralError"
+  /api/v1/user/quizzes/submit:
+    post:
+      summary: "Submit quizz"
+      description: "Endpoint to submit a quizz with user answers"
+      tags:
+        - UserQuizzes
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: body
+          name: body
+          description: "Quizz submission data"
+          required: true
+          schema:
+            type: object
+            properties:
+              quizzId:
+                type: integer
+                description: "ID of the quizz being submitted"
+              answers:
+                type: array
+                description: "User answers for each question"
+                items:
+                  type: object
+                  properties:
+                    questionId:
+                      type: integer
+                      description: "ID of the question being answered"
+                    optionId:
+                      type: integer
+                      description: "ID of the selected option for the question"
+      responses:
+        200:
+          description: "Quizz submitted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  quizzId:
+                    type: integer
+                    description: "ID of the submitted quizz"
+                  results:
+                    type: array
+                    description: "Results of each question"
+                    items:
+                      type: object
+                      properties:
+                        questionId:
+                          type: integer
+                          description: "ID of the question"
+                        isCorrect:
+                          type: boolean
+                          description: "Indicates if the user's answer is correct"
+                        questionScore:
+                          type: integer
+                          description: "Indicates the question score obtained"
+                  totalScore:
+                    type: integer
+                    description: "Total score achieved by the user"
+        default:
+          description: Error message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/GeneralError"
